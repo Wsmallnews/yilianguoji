@@ -1,0 +1,1 @@
+metisMenu 是个Bootstrap 3 风格的 jQuery 菜单插件，允许用户创建类似手风琴效果的可折叠菜单，允许自动折叠效果

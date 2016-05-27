@@ -1,0 +1,48 @@
+body{color:#333333}
+/* 下面为重新定义mui.css 中的默认样式 */
+.mui-bar { background:#007aff;}
+
+.mui-title {color:#FFFFFF}
+
+.mui-icon-back {color:#FFFFFF;}
+
+/* 上面为重新定义mui.css 中的默认样式 */
+
+/* 清除浮动 */
+.clear{clear:both;}
+
+/* padding */
+.padding_top{padding-top:10px;} 
+.padding_bottom{padding-bottom:10px;}
+.padding_left{padding-left:10px;}
+.padding_right{padding-right:10px;}
+
+/* margin */
+.margin_top{margin-top:10px;} 
+.margin_bottom{margin-bottom:10px;}
+.margin_left{margin-left:10px;}
+.margin_right{margin-right:10px;}
+
+/* 宽高 42 圆形头像 */
+.head_pic_42{width:42px;height:42px;border-radius:21px;}
+
+/* 两头圆的按钮 */
+.oper_button {padding: 0px 10px;height:20px;overflow:hidden;background:#FFFFFF;border:1px solid #AAAAAA;border-radius: 10px;}
+
+/* 修改mui-table-view-cell 默认属性 */
+
+
+/* font 样式 */
+.hui14 {color:#AAAAAA ;font-size:14px;}
+.hui15 {color:#AAAAAA ;font-size:15px;}
+.hui16 {color:#AAAAAA ;font-size:16px;}
+.hui17 {color:#AAAAAA ;font-size:17px;}
+.hui18 {color:#AAAAAA ;font-size:18px;}
+
+.hei14 {color:#333333 ;font-size:14px;}
+.hei15 {color:#333333 ;font-size:15px;}
+.hei16 {color:#333333 ;font-size:16px;}
+.hei17 {color:#333333 ;font-size:17px;}
+.hei18 {color:#333333 ;font-size:18px;}
+
+
