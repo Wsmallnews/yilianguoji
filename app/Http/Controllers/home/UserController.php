@@ -8,7 +8,7 @@ use Redirect;
 use AuthUser;
 use Session;
 use Response;
-use App\InviteCode;
+use App\Wallet;
 use DB;
 
 class UserController extends CommonController {
@@ -53,15 +53,27 @@ class UserController extends CommonController {
 	}
 
     public function add() {
+		// Session::put('createName',$this->createName());
         return view('home.user.add');
     }
 
     public function doAdd() {
-		$inviteCode = new InviteCode();
-
+		// $inviteCode = new InviteCode();
 		DB::beginTransaction();
+
+		$user_info = AuthUser::user();
+
+		//每人最多邀请三个直属
+		if($user_info->children_num >= 3){
+			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('最多添加三个直属');
+		}else{
+			$user_info->children_num = $user_info->children_num + 1;
+			$user_info->save();
+		}
+
 		$is_active = 0;
-        $data = Request::except('confirmPassword');
+        $data = Request::input();
+		$data['parent_id'] = Session::get('laravel_user_id');
 
         $validate = Validator::make($data,User::addRole(),User::addRoleMsg());
 
@@ -73,28 +85,18 @@ class UserController extends CommonController {
 
         $user->parent_id = Session::get('laravel_user_id');
 
-        if(!empty($data['invi_code'])){
-            //验证激活码
-            $result = $inviteCode->checkInviCode($data['invi_code']);
-			if($result){
-				$inviCode = $result;
-				$is_active = 1;
-				$user->status = 1;
-				$user->invi_at = date('Y-m-d H:i:s');
+        if(isset($data['now_active']) && $data['now_active']){
+			$wallet = Wallet::find(Session::get('laravel_user_id'));
+			if($wallet){
+				$result = $wallet->increaseMoney($money,-2);	//用户激活
+				if($result){
+					$user->status = 1;
+					$user->invi_at = date('Y-m-d H:i:s');
+				}
 			}
         }
 
         $result = $user->save();
-
-		if($result && $is_active){
-			// 将邀请码标记为已使用
-			$inviteCode->find($inviCode['id']);
-			$inviteCode->status = 1;
-			$inviteCode->use_id = $result;
-			$inviteCode->used_at = date('Y-m-d H:i:s');
-
-			$result = $inviteCode->save();
-		}
 
         if ($result){
 			DB::commit();
@@ -141,6 +143,22 @@ class UserController extends CommonController {
 			DB::rollback();
             return Response::json(array('error'=>1,'info' => '激活失败'));
         }
+	}
+
+
+	public function createName(){
+	    $success = true;
+
+	    do{
+	        //生成唯一用户str
+    	    $str = 'yl';
+
+    	    $str .= mt_rand(10000000,99999999);
+
+    	    $count = User::where('name' , $str)->count();
+	    }while($count > 0);
+
+	    return $str;
 	}
 
 }

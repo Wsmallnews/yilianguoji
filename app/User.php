@@ -36,33 +36,41 @@ class User extends CommonModel{
 	//注册验证
 	public static function addRole(){
 	    return [
-	        'nick_name' => 'required',
+            'name' => 'required|unique:users',
+	        // 'nick_name' => 'required',
 	        'email' => 'required|email',
-// 	        'password' => 'required',
-// 	        'phone' => 'required|unique:users',
-// 	        'gender' => 'required',
-// 	        'birth' => 'required',
-// 	        'real_name' => 'required',
-// 	        'cert_no' => 'required',
-// 	        'card_type' => 'required',
-// 	        'card_no' => 'required',
+	        'password' => 'required',
+            'confirmPassword' => 'required|same:password',
+	        'phone' => 'required|unique:users',
+	        'gender' => 'required',
+	        'birth' => 'required',
+	        'real_name' => 'required',
+	        'cert_no' => 'required',
+	        'card_type' => 'required',
+	        'card_no' => 'required',
+            'parent_id' => 'required'
 	    ];
 	}
 
 	public static function addRoleMsg(){
 	    return [
-	        'nick_name.required' => '用户昵称不能为空',
+            'name.required' => '用户名不能为空',
+            'name.required' => '用户名已存在，请重新输入',
+	        // 'nick_name.required' => '用户昵称不能为空',
 	        'email.required' => '邮箱不能为空',
 	        'email.email' => '邮箱格式不正确',
-// 	        'password.required' => '密码不能为空',
-// 	        'phone.required' => '手机号不能为空',
-// 	        'phone.unique' => '手机号已存在',
-// 	        'gender.required' => '性别必须选择',
-// 	        'birth.required' => '生日不能为空',
-// 	        'real_name.required' => '真实姓名不能为空',
-// 	        'cert_no.required' => '身份证号不能为空',
-// 	        'card_type.required' => '账户类型必须选择',
-// 	        'card_no.required' => '银行账户不能为空'
+	        'password.required' => '密码不能为空',
+            'confirmPassword.required' => '两次输入密码不一致',
+            'confirmPassword.same' => '两次输入密码不一致',
+	        'phone.required' => '手机号不能为空',
+	        'phone.unique' => '手机号已存在',
+	        'gender.required' => '性别必须选择',
+	        'birth.required' => '生日不能为空',
+	        'real_name.required' => '真实姓名不能为空',
+	        'cert_no.required' => '身份证号不能为空',
+	        'card_type.required' => '账户类型必须选择',
+	        'card_no.required' => '银行账户不能为空',
+            'parent_id.required' => '必须有邀请人'
 	    ];
 	}
 

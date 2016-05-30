@@ -6,7 +6,8 @@ use Request;
 use Validator;
 use Redirect;
 use AuthUser;
-use App\InviteCode;
+use App\Wallet;
+use Session;
 
 class IndexController extends CommonController {
 

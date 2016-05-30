@@ -7,13 +7,13 @@
     <meta name="author" content="">
 
     <title>添加用户  - {{$l_web['web_name']}}</title>
-    
+
 </head>
 
 <body>
     <div id="wrapper">
         <!-- Navigation -->
-        
+
         @include('home.includes.nav')
 
         <div id="page-wrapper">
@@ -29,16 +29,17 @@
                     <div class="form-group">
                         <label class="col-lg-3 control-label">用户名</label>
                         <div class="col-lg-5">
-                            <input type="text" class="form-control" name="name" />
+                            <input type="text" class="form-control" name="name" value="{{ old('nick_name') }}"/>
+                            将作为登录账号使用
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label class="col-lg-3 control-label">昵称</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="nick_name" value="{{ old('nick_name') }}" />
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                         <label class="col-lg-3 control-label">邮箱</label>
@@ -60,7 +61,7 @@
                             <input type="password" class="form-control" name="confirmPassword" />
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="col-lg-3 control-label">手机</label>
                         <div class="col-lg-5">
@@ -95,21 +96,21 @@
                             <input type="text" class="form-control" name="birth" value="{{ old('birth') }}" /> 0000-00-00
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="col-lg-3 control-label">真实姓名</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="real_name" value="{{ old('real_name') }}" />
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="col-lg-3 control-label">身份证号</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="cert_no" value="{{ old('cert_no') }}" />
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="col-lg-3 control-label">账户类型</label>
                         <div class="col-lg-5">
@@ -119,11 +120,19 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="col-lg-3 control-label">银行账户</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="card_no" value="{{ old('card_no') }}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">现在激活</label>
+                        <div class="col-lg-5">
+                            <input type="checkbox" name="now_active" value="1" @if(old('now_active') == 1) checked @endif />
+                            现在激活将直接扣除600 亿联币
                         </div>
                     </div>
 
@@ -148,7 +157,7 @@
     @if($errors->any())
         alert("{{$errors->first()}}");
     @endif
-    
+
     $('#defaultForm').bootstrapValidator({
 //      live: 'disabled',
         message: 'This value is not valid',
@@ -222,7 +231,7 @@
 // //                     		console.log(value);
 // //                     		var phone = $('#defaultForm input[name=phone]').val();
 // //                     		var length = parseInt(phone.length);
-                    		
+
 // //                     		if(length == 11){
 // //                         		return true;
 // // //                     		    l.ajax({
@@ -236,7 +245,7 @@
 // // //                             		}
 // // //                         		});
 // //                         	}
-                    		
+
 // //                 		}
 // //             		}
 //         		}
@@ -311,13 +320,13 @@
 //     $('#validateBtn').click(function() {
 //       $('#defaultForm').bootstrapValidator('validate');
 //     });
-    
+
 //     $('#resetBtn').click(function() {
 //       $('#defaultForm').data('bootstrapValidator').resetForm(true);
 //     });
 
     </script>
-    
+
 </body>
 
 </html>
