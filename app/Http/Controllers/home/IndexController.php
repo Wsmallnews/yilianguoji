@@ -7,7 +7,11 @@ use Validator;
 use Redirect;
 use AuthUser;
 use App\Wallet;
+use App\Setting;
+use App\WalletLog;
 use Session;
+use Hp;
+use DB;
 
 class IndexController extends CommonController {
 
@@ -39,12 +43,43 @@ class IndexController extends CommonController {
 	 */
 	public function index()
 	{
+
+		// DB::beginTransaction();
+		// try{
+		// 	$wallet = Wallet::findOrFail(1000000);
+		//
+		// 	$wallet->money = 300;
+		// 	$wallet->save();
+		//
+		// 	$walletLog = new WalletLog();
+		// 	$walletLog->u_id = 1;
+		// 	$walletLog->type_id = 2;
+		// 	$walletLog->type = 1;
+		// 	$walletLog->money = 300;
+		// 	$walletLog->status = 1;
+		// 	$walletLog->save();
+		//
+		// 	DB::commit();
+		// }catch(Exception $e){
+		// 	DB::rollback();
+		//
+		// 	echo "失败";
+		// 	print_r($e);
+		// }exit;
 	    return view('home.index.index');
 	}
 
 
 	public function login()
 	{
+		// echo env('DB_HOST')."host<br>";
+		// echo env('DB_DATABASE')."db<br>";
+		// echo env('DB_USERNAME')."us<br>";
+		// echo env('DB_PASSWORD')."ps<br>";
+		// echo env('CACHE_DRIVER')."cache<br>";
+		// echo env('MAIL_DRIVER')."mail<br>";
+		// echo env('MAIL_HOST')."mhost<br>";
+		// echo env('MAIL_PORT')."port<br>";
 	    return view('home.login');
 	}
 
@@ -60,6 +95,14 @@ class IndexController extends CommonController {
         }
 
         if (AuthUser::attempt($data)){
+			//登录成功
+			$u_id = Session::get('laravel_user_id');
+			$wallet = new Wallet();
+			$result = $wallet->find($u_id);
+			if(!$result){
+				$wallet->doAdd($u_id);
+			}
+
             return redirect()->intended('home/index');
         }else{
             return Redirect::back()->withInput(Request::except('password'))->withErrors('密码错误');

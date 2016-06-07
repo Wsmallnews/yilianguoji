@@ -24,12 +24,25 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::get('/', 'IndexController@index');
     Route::get('index', 'IndexController@index');
 
-
+    //用户
     Route::get('userList', 'UserController@lists');
     Route::get('userAdd', 'UserController@add');
     Route::post('userDoAdd', 'UserController@doAdd');
     Route::get('userActive', 'UserController@doUserActive');
+    Route::get('userNameUnique', 'UserController@nameUnique');
 
+    //提现
+    Route::get('cashList', 'CashController@lists');
+    Route::get('cashAdd', 'CashController@add');
+    Route::post('cashDoAdd', 'CashController@doAdd');
+
+    //我的钱包
+    Route::get('myWallet', 'WalletController@wallet');
+    Route::get('walletLog', 'WalletLogController@lists');
+
+    //系统设置
+    Route::get('setting', 'SettingController@setting');
+    Route::post('settingDoEdit', 'SettingController@doEdit');
 
 
 

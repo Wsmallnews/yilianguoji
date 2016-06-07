@@ -12,6 +12,7 @@ return [
 	| application. If disabled, a simple generic error page is shown.
 	|
 	*/
+	'env' => env('APP_ENV','local'),
 
 	'debug' => env('APP_DEBUG'),
 
@@ -26,7 +27,7 @@ return [
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://www.yilian.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -146,7 +147,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 	    'App\Providers\HpServiceProvider',
 	    'App\Providers\AuthUserServiceProvider',
-	    
+
 	],
 
 	/*

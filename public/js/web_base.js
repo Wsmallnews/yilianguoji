@@ -38,5 +38,13 @@ var l = {
 	},
 	success : function(msg){
 		alert(msg);
+	},
+	location : function(url){
+		if(url != undefined){
+			window.location.href = url;
+			return;
+		}
+		window.history.go(-1);
 	}
+
 }

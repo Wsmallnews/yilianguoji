@@ -6,13 +6,13 @@
     <meta name="author" content="">
 
     <title>欢迎来到 {{$l_web['web_name']}} - 会员管理系统</title>
-    
+
 </head>
 
 <body>
     <div id="wrapper">
         <!-- Navigation -->
-        
+
         @include('home.includes.nav')
 
         <div id="page-wrapper">
@@ -171,7 +171,7 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
-                    
+
                 </div>
                 <!-- /.col-lg-4 -->
             </div>
@@ -183,7 +183,11 @@
     <!-- /#wrapper -->
 
     @include('home.includes.loadjs')
-
+    <script>
+    @if($errors->any())
+        l.error("{{$errors->first()}}");
+    @endif
+    </script>
 </body>
 
 </html>

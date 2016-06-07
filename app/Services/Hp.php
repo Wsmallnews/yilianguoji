@@ -1,12 +1,18 @@
 <?php namespace App\Services;
 
 use Illuminate\Contracts\Hp\Hp as HpContract;
+use App\Setting;
 
 class Hp implements HpContract {
 
+	public function l_web(){
+		return Setting::find(1);
+	}
+
+
 	public function rt($info = '',$status = 0){
 	    $r['info'] = $info;
-	    
+
 	    if(empty($info)){
 	        $r['info'] = $status ? '操作成功' : '操作失败';
 	    }
@@ -15,7 +21,7 @@ class Hp implements HpContract {
 
 	    return $r;
 	}
-	
+
 
 	// 获取二维数组中某一项的集合
 	public function zstr_array_column($data, $field){
@@ -27,5 +33,5 @@ class Hp implements HpContract {
 	    }
 	    return $fields;
 	}
-	
+
 }

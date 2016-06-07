@@ -27,11 +27,11 @@ class Kernel extends HttpKernel {
 		'auth' => 'App\Http\Middleware\Authenticate',
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
-	    
-	    //后台管理中间件
+
+	    //管理员中间件
 	    'admin' => 'App\Http\Middleware\AdminMiddleware',
-	    
-	    //前台管理中间件
+
+	    //前台登录管理中间件
 	    'home' => 'App\Http\Middleware\HomeMiddleware',
 	];
 

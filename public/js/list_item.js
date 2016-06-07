@@ -49,6 +49,21 @@ var list = {
                 }
             }
         });
+	},
+	reload : function () {
+		list.request_url = list.current_url;
+		list.load_request();
 	}
-
 }
+
+var autoloadMethod = {
+	init : function(){
+		if($("#resetBtn").length > 0){
+			$("#resetBtn").on('click',function(){
+				l.location();
+			});
+		}
+	}
+}
+
+autoloadMethod.init();

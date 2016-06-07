@@ -1,11 +1,12 @@
 <?php
 namespace App;
+use DB;
 
 class Wallet extends CommonModel{
 
 	protected $Guarded  = ['*'];	//不允许批量赋值
 
-	protected $fillable = array('money','money_lock');
+	protected $fillable = array('id','money','money_lock');
 
 	public $timestamps = false;
 
@@ -24,8 +25,18 @@ class Wallet extends CommonModel{
 	    ];
 	}
 
+	public function doAdd($id){
+		$this->id = $id;
+		$this->money = 0;
+		$this->money_lock = 0;
+		return $this->save();
+	}
+
+
 	//直接增加
 	public function increaseMoney($money,$type_id){
+		DB::beginTransaction();
+
 		$this->money = $this->money + $money;
 		$result = $this->save();
 
@@ -78,14 +89,53 @@ class Wallet extends CommonModel{
 		return $result;
 	}
 
-	//减少余额，增加锁定余额，虚拟减少
-	public function virtualReduceMoney($money,$type){
+	//减少余额，增加锁定余额，虚拟减少，不记录日志，处理成功记录钱包日志
+	public function virtualReduceMoney($money){
+		//减少可用余额
+		$this->money = $this->money - $money;
 
+		if($this->money < 0){
+			return false;
+		}
+
+		//增加锁定余额
+		$this->money_lock = $this->money_lock + $money;
+
+		$result = $this->save();
+
+		return $result;
 	}
 
-	//真是减少锁定余额
-	public function realReduceMoney($money,$type){
+	//真实减少锁定余额
+	public function realReduceMoney($money,$type_id){
+		DB::beginTransaction();
 
+		//减少锁定余额
+		$this->money_lock = $this->money_lock + $money;
+
+		if($this->money_lock < 0){
+			return false;
+		}
+
+		$result = $this->save();
+
+		if($result){
+			$walletLog = new WalletLog();
+			$walletLog->u_id = $this->id;
+			$walletLog->type_id = $type_id;
+			$walletLog->type = getType($type_id);
+			$walletLog->money = $money;
+			$walletLog->status = 1;
+			$result = $walletLog->save();
+		}
+
+		if ($result){
+			DB::commit();
+		}else{
+			DB::rollback();
+		}
+
+		return $result;
 	}
 
 	private function getType($type_id){

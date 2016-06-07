@@ -31,14 +31,14 @@ form label {color:#000000;}
         	<a class="switch_btn_focus" id="switch_qlogin" href="javascript:void(0);" tabindex="7">快速登录</a>
         </div>
     </div>
-    
-    <div class="web_qr_login" id="web_qr_login" style="display: block; height: 235px;">    
+
+    <div class="web_qr_login" id="web_qr_login" style="display: block; height: 235px;">
         <!--登录-->
 
         @if($errors->any())
             <div class="login_msg" id="msg">提示：{{$errors->first()}}</div>
         @endif
-        
+
         <div class="web_login" id="web_login">
             <div class="login-box">
 				<div class="login_form">
@@ -81,8 +81,3 @@ form label {color:#000000;}
 
 </body>
 </html>
-
-
-
-
-

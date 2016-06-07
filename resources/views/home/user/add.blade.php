@@ -25,11 +25,11 @@
             </div>
             <!-- /.row -->
             <div class="col-lg-12 row">
-                <form id="defaultForms" method="post" class="form-horizontal" action="{{url('home/userDoAdd')}}">
+                <form id="defaultForms" method="post" class="form-horizontal" action="{{url('home/userDoAdd')}}" >
                     <div class="form-group">
                         <label class="col-lg-3 control-label">用户名</label>
                         <div class="col-lg-5">
-                            <input type="text" class="form-control" name="name" value="{{ old('nick_name') }}"/>
+                            <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" onblur="validate('no')"/>
                             将作为登录账号使用
                         </div>
                     </div>
@@ -132,13 +132,13 @@
                         <label class="col-lg-3 control-label">现在激活</label>
                         <div class="col-lg-5">
                             <input type="checkbox" name="now_active" value="1" @if(old('now_active') == 1) checked @endif />
-                            现在激活将直接扣除600 亿联币
+                            现在激活将直接扣除{{$l_web->active_money}} 亿联币
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="col-lg-9 col-lg-offset-3">
-                            <button type="submit" class="btn btn-info" id="validateBtn">注册</button>
+                            <button type="button" class="btn btn-info" id="subBtn" onclick="validate('yes')">注册</button>
                             <button type="button" class="btn btn-info" id="resetBtn">取消</button>
                         </div>
                     </div>
@@ -155,175 +155,37 @@
     <script>
 
     @if($errors->any())
-        alert("{{$errors->first()}}");
+        l.error("{{$errors->first()}}");
     @endif
 
-    $('#defaultForm').bootstrapValidator({
-//      live: 'disabled',
-        message: 'This value is not valid',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-		fields: {
-    		nick_name: {
-    			validators: {
-    				notEmpty: {
-    					message: '用户昵称不能为空'
-    				}
-    			}
-    		},
-//     		email: {
-//         		validators: {
-//                     notEmpty: {
-//                         message: '邮箱不能为空'
-//                     },
-//                     emailAddress: {
-//                         message: '邮箱格式不正确'
-//                     }
-//                 }
-//     		},
-//     		password: {
-//         		validators: {
-//             		notEmpty: {
-//             		    message: '密码不能为空'
-//             		},
-//             		identical: {
-//                 		field: 'confirmPassword',
-//                 		message: '两次输入密码不一致'
-//             		},
-//             		different: {
-//                 		field: 'nick_name',
-//                 		message: '密码不能和昵称相同'
-//             		}
-//         		}
-//     		},
-//     		confirmPassword: {
-//         		validators: {
-//             		notEmpty: {
-//             		    message: '确认密码不能为空'
-//           			},
-//             		identical: {
-//                 		field: 'password',
-//                 		message: '两次输入密码不一致'
-//             		},
-//             		different: {
-//             			field: 'nick_name',
-//                 		message: '密码不能和昵称相同'
-//             		}
-//         		}
-//     		},
-//     		phone: {
-//         		message: '手机号不正确',
-//         		validators: {
-//             		notEmpty: {
-//           			    message: '手机号不能为空'
-//             		},
-//             		regexp: {
-//                 		regexp: /^1\d{10}$/,
-//                 		message: '手机号格式不正确'
-//             		}
-// //             		,
-// //             		callback: {
-// //                 		message: '手机号已存在',
-// //                 		callback: function(value) {
-// //                     		console.log(value);
-// //                     		var phone = $('#defaultForm input[name=phone]').val();
-// //                     		var length = parseInt(phone.length);
+    function validate(type){
+        var name = $("#name").val();
+        if(name == ''){
+            l.error('用户名不能为空');
+            $("#name").css({'border': '1px solid #FF0000'});
+            return false;
+        }
 
-// //                     		if(length == 11){
-// //                         		return true;
-// // //                     		    l.ajax({
-// // //                         		    url:"{{url('home/doLogin')}}",
-// // //                         		    data:{phone:phone},
-// // //                         		    success:function(r){
-// // //                             		    if(r.status){
-// // //                                 		    return true;
-// // //                                 		}
-// // //                                 		return false;
-// // //                             		}
-// // //                         		});
-// //                         	}
-
-// //                 		}
-// //             		}
-//         		}
-//     		},
-//     		gender: {
-//         		validators: {
-//             		notEmpty: {
-//           			    message: '性别必须选择'
-//             		}
-//         		}
-//     		},
-//     		birth: {
-//         		validators: {
-//         			notEmpty: {
-//           			    message: '生日不能为空'
-//             		},
-//             		date: {
-//                 		format: 'YYYY-MM-DD',
-//                 		message: '生日格式不正确'
-//             		}
-//         		}
-//     		},
-//     		real_name: {
-//     			validators: {
-//     				notEmpty: {
-//     					message: '真是姓名不能为空'
-//     				}
-//     			}
-//     		},
-//     		cert_no: {
-//     			validators: {
-//     				notEmpty: {
-//     					message: '身份证号不能为空'
-//     				}
-//     			}
-//     		},
-//     		card_type: {
-//     			validators: {
-//     				notEmpty: {
-//     					message: '账户类型必须选择'
-//     				}
-//     			}
-//     		},
-//     		card_no: {
-//     			validators: {
-//     				notEmpty: {
-//     					message: '银行账户不能为空'
-//     				}
-//     			}
-//     		}
-    	}
-    }).on('success.form.bv', function(e) {
-    	$("#defaultForm").submit();
-        // alert('success');
-        // Prevent form submission
-        // e.preventDefault();
-
-        // Get the form instance
-        // var $form = $(e.target);
-
-        // Get the BootstrapValidator instance
-        // var bv = $form.data('bootstrapValidator');
+        l.ajax({
+            url:"{{URL::to('home/userNameUnique')}}",
+            data:{'name':name},
+            type:'get',
+            success:function(r){
+                if(r.error == 0){
+                    $("#name").css({'border': '1px solid #ccc'});
+                    if(type == 'yes'){
+                        $("#defaultForms").submit();
+                    }
+                    return true;
+                }
+                $("#name").css({'border': '1px solid #FF0000'});
+                l.error(r.info);
+                return false;
+            }
+        });
+    }
 
 
-        // Use Ajax to submit form data
-//         $.post($form.attr('action'), $form.serialize(), function(result) {
-//             console.log(result);
-//         }, 'json');
-    });
-
-    // Validate the form manually
-//     $('#validateBtn').click(function() {
-//       $('#defaultForm').bootstrapValidator('validate');
-//     });
-
-//     $('#resetBtn').click(function() {
-//       $('#defaultForm').data('bootstrapValidator').resetForm(true);
-//     });
 
     </script>
 

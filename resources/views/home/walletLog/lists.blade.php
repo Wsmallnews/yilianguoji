@@ -5,7 +5,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>用户列表 - {{$l_web['web_name']}}</title>
+    <title>钱包记录 - {{$l_web['web_name']}}</title>
 
 </head>
 
@@ -18,7 +18,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">会员列表</h1>
+                    <h1 class="page-header">钱包记录</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -27,21 +27,21 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                                                        我的会员列表
+                            我的钱包记录列表
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" id="list_div">
                             <div id="search_div">
-                                <form class="form-inline" id="table_div_search">
+                                <!-- <form class="form-inline" id="table_div_search">
                                     <div class="form-group">
                                         <label>用户名</label>
                                         <input type="text" class="form-control" name="keyword" placeholder="关键字">
                                     </div>
                                     <button type="button" class="btn btn-primary" id="search">搜索</button>
-                                </form>
+                                </form> -->
                             </div>
                             <div id="table_div">
-                                @include('home.user.li')
+                                @include('home.walletLog.li')
                             </div>
                         </div>
                         <!-- /.panel-body -->
@@ -59,27 +59,6 @@
     <script type="text/javascript" >
 
     list.init();
-
-    $("#table_div").on('click','.active_btn',function(){
-        var id = $(this).parents('tr').attr('user_id');
-        if(confirm('确定要激活该用户吗？激活将消耗600 亿联币！')){
-            l.ajax({
-                url:"{{URL::to('home/userActive')}}",
-                data:{'id':id},
-                type:'get',
-                success:function(r){
-                    if(r.error == 0){
-                        l.success('操作成功');
-                        list.reload();
-                        return;
-                    }
-                    l.error('操作失败');
-                    return;
-                }
-            });
-        }
-        return false;
-    });
 
     </script>
 

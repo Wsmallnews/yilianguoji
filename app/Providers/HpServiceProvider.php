@@ -2,6 +2,9 @@
 
 use Illuminate\Support\ServiceProvider;
 use View;
+use App\Setting;
+use Session;
+
 class HpServiceProvider extends ServiceProvider {
 
 	/**
@@ -11,11 +14,13 @@ class HpServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		//所有视图共享数据
-	    View::share('l_web', [
-	       'web_name' => '123'
-	       ]
-	    );
+
+		// Session::forget('l_web');
+		// $l_web = Setting::find(1);
+		//
+		// Session::put('l_web',$l_web);
+		// //所有视图共享数据
+	    View::share('l_web', $this->app['l_web']);
 	}
 
 	/**
@@ -33,6 +38,14 @@ class HpServiceProvider extends ServiceProvider {
 			'Illuminate\Contracts\Hp\Hp',
 			'App\Services\Hp'
 		);
+
+		$this->app->singleton('l_web',function($app){
+			// if($app->l_web){
+			// 	return $app->l_web;
+			// }
+			return Setting::find(1);
+		});
+
 	}
 
 }

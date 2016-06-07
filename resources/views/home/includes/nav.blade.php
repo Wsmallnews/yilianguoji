@@ -140,18 +140,37 @@
                         </li>
 
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 收入队列<span class="fa arrow"></a>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 提现管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{{url('home/inList')}}">排队列表</a>
+                                    <a href="{{url('home/cashList')}}">提现列表</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/inAdd')}}">添加排队</a>
+                                    <a href="{{url('home/cashAdd')}}">申请提现</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 钱包<span class="fa arrow"></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{{url('home/myWallet')}}">我的钱包</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/walletLog')}}">钱包记录</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 系统设置<span class="fa arrow"></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{{url('home/setting')}}">系统设置</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li>
+                        <!-- <li>
                             <a><i class="fa fa-dashboard fa-fw"></i> 支出队列<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -180,9 +199,9 @@
                                         </li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul> -->
                             <!-- /.nav-second-level -->
-                        </li>
+                        <!-- </li> -->
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

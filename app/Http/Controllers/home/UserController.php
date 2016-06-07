@@ -29,7 +29,7 @@ class UserController extends CommonController {
 	 * @return Response
 	 */
 	public function lists() {
-	    $pageRow = Request::input('rows',1);
+	    $pageRow = Request::input('rows',15);
 
 	    $user_id = Session::get('laravel_user_id');
 
@@ -58,6 +58,8 @@ class UserController extends CommonController {
     }
 
     public function doAdd() {
+		$l_web = app('l_web');
+
 		// $inviteCode = new InviteCode();
 		DB::beginTransaction();
 
@@ -66,12 +68,8 @@ class UserController extends CommonController {
 		//每人最多邀请三个直属
 		if($user_info->children_num >= 3){
 			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('最多添加三个直属');
-		}else{
-			$user_info->children_num = $user_info->children_num + 1;
-			$user_info->save();
 		}
 
-		$is_active = 0;
         $data = Request::input();
 		$data['parent_id'] = Session::get('laravel_user_id');
 
@@ -81,6 +79,10 @@ class UserController extends CommonController {
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors($validate->errors());
         }
 
+		//修改用户信息
+		$user_info->children_num = $user_info->children_num + 1;
+		$user_info->save();
+
         $user = new User($data);
 
         $user->parent_id = Session::get('laravel_user_id');
@@ -88,7 +90,7 @@ class UserController extends CommonController {
         if(isset($data['now_active']) && $data['now_active']){
 			$wallet = Wallet::find(Session::get('laravel_user_id'));
 			if($wallet){
-				$result = $wallet->increaseMoney($money,-2);	//用户激活
+				$result = $wallet->reduceMoney($l_web->active_money,-2);
 				if($result){
 					$user->status = 1;
 					$user->invi_at = date('Y-m-d H:i:s');
@@ -118,21 +120,14 @@ class UserController extends CommonController {
 			return Response::json(array('error'=>1,'info' => '该用户已激活，不需要重复激活'));
 		}
 
-		$code = AuthUser::user()->getOneInviCode()->first();
-
-		if($code){
-			$user->status = 1;
-			$user->invi_code = $code->invi_code;
-			$user->invi_at = date('Y-m-d H:i:s');
-
-			$result = $user->save();
-
+		$wallet = Wallet::find(Session::get('laravel_user_id'));
+		if($result){
+			$result = $wallet->reduceMoney(app('l_web')->active_money,-2);	//用户激活
 			if($result){
-				// 将邀请码标记为已使用
-				$code->status = 1;
-				$code->use_id = $id;
-				$code->used_at = date('Y-m-d H:i:s');
-				$result = $code->save();
+				$user->status = 1;
+				$user->invi_at = date('Y-m-d H:i:s');
+
+				$result = $user->save();
 			}
 		}
 
@@ -145,6 +140,17 @@ class UserController extends CommonController {
         }
 	}
 
+
+	public function nameUnique(){
+		$name = Request::input('name','');
+		$result = User::where('name',$name)->count();
+
+		if($result){
+			return Response::json(array('error'=>1,'info' => '用户名已存在'));
+		}else{
+			return Response::json(array('error'=>0,'info' => '用户名可以使用'));
+		}
+	}
 
 	public function createName(){
 	    $success = true;

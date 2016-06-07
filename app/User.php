@@ -90,6 +90,16 @@ class User extends CommonModel{
 	    return $this->hasMany('App\OutQueue','u_id');
 	}
 
+    //获取当前用户钱包
+	public function getWalletOne(){
+	    return $this->hasOne('App\Wallet','id');
+	}
+
+    // public function getCode(){
+	//     return $this->hasMany('App\InviteCode','u_id');
+	// }
+
+
 
 	/*封号*/
 	public function lockUser(){
