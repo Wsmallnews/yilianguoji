@@ -42,6 +42,29 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-lg-3 control-label">直推奖励</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="direct_prize" value="@if($setting->exists){{{$setting->direct_prize}}}@else{{{ old('direct_prize') }}}@endif"/>
+                            直接推荐用户奖励
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">见点奖</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="see_prize" value="@if($setting->exists){{{$setting->see_prize}}}@else{{{ old('see_prize') }}}@endif"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">重消比例</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="repeat_scale" value="@if($setting->exists){{{$setting->repeat_scale}}}@else{{{ old('repeat_scale') }}}@endif"/>
+                            所有奖励扣除百分比进行重复消费
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <div class="col-lg-9 col-lg-offset-3">
                             <button type="submit" class="btn btn-info" id="subBtn">设置</button>
                             <button type="button" class="btn btn-info" id="resetBtn">取消</button>

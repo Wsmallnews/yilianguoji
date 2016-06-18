@@ -13,6 +13,10 @@ use Session;
 use Hp;
 use DB;
 
+use Queue;
+use App\Commands\SeePrize;
+use Artisan;
+
 class IndexController extends CommonController {
 
 	/*
@@ -43,7 +47,19 @@ class IndexController extends CommonController {
 	 */
 	public function index()
 	{
-
+		// $a = 'smallnews';
+		// echo bcrypt('smallnews').'<br>';
+		// echo bcrypt($a).'<br>';
+		// exit;
+		// try{
+		// 	$mgr = new CommandManager();
+		// 	$cmd = $mgr->getCommandObject("realcommand");
+		// 	$cmd->execute();
+		// }catch (Exception $e){
+		// 	echo "fail";
+		// }
+		// exit;
+		// return;
 		// DB::beginTransaction();
 		// try{
 		// 	$wallet = Wallet::findOrFail(1000000);
@@ -66,6 +82,7 @@ class IndexController extends CommonController {
 		// 	echo "失败";
 		// 	print_r($e);
 		// }exit;
+
 	    return view('home.index.index');
 	}
 

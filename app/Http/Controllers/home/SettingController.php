@@ -39,10 +39,16 @@ class SettingController extends CommonController {
             return Redirect::back()->withInput(Request::input())->withErrors($validate->errors());
         }
 
+		// 使用验证规则，不正常，改用直接验证
+		if($data['repeat_scale'] > 1 || $data['repeat_scale'] < 0){
+			return Redirect::back()->withInput($data)->withErrors('重消比例必须大于0，并且小于1');
+		}
+
 		$setting = Setting::find(1);
 		$setting->fill($data);
+
         $setting->save();
 
-		return redirect('home/index');
+		// return redirect('home/index');
     }
 }

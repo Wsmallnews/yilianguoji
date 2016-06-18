@@ -10,6 +10,7 @@ use Session;
 use Response;
 use App\Wallet;
 use DB;
+use Hash;
 
 class UserController extends CommonController {
 
@@ -60,9 +61,6 @@ class UserController extends CommonController {
     public function doAdd() {
 		$l_web = app('l_web');
 
-		// $inviteCode = new InviteCode();
-		DB::beginTransaction();
-
 		$user_info = AuthUser::user();
 
 		//每人最多邀请三个直属
@@ -70,7 +68,7 @@ class UserController extends CommonController {
 			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('最多添加三个直属');
 		}
 
-        $data = Request::input();
+		$data = Request::input();
 		$data['parent_id'] = Session::get('laravel_user_id');
 
         $validate = Validator::make($data,User::addRole(),User::addRoleMsg());
@@ -79,39 +77,28 @@ class UserController extends CommonController {
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors($validate->errors());
         }
 
-		//修改用户信息
-		$user_info->children_num = $user_info->children_num + 1;
-		$user_info->save();
+		DB::beginTransaction();
+		try {
+			//修改用户信息
+			$user_info->children_num = $user_info->children_num + 1;
+			$user_info->save();
 
-        $user = new User($data);
+			$data['password'] = bcrypt($data['password']);//设置密码
+	        $user = new User($data);
+			$result = $user->save();
 
-        $user->parent_id = Session::get('laravel_user_id');
-
-        if(isset($data['now_active']) && $data['now_active']){
-			$wallet = Wallet::find(Session::get('laravel_user_id'));
-			if($wallet){
-				$result = $wallet->reduceMoney($l_web->active_money,-2);
-				if($result){
-					$user->status = 1;
-					$user->invi_at = date('Y-m-d H:i:s');
-				}
-			}
-        }
-
-        $result = $user->save();
-
-        if ($result){
 			DB::commit();
-            return redirect()->intended('home/userList');
-        }else{
+			return redirect('home/userList');
+		}catch(Exception $e) {
 			DB::rollback();
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('添加失败');
-        }
+		}
+
+		// Queue::push(new SeePrize($user->id));
     }
 
 
 	public function doUserActive(){
-		DB::beginTransaction();
 		$id = Request::input('id',0);
 
 		$user = User::find($id);
@@ -120,8 +107,15 @@ class UserController extends CommonController {
 			return Response::json(array('error'=>1,'info' => '该用户已激活，不需要重复激活'));
 		}
 
-		$wallet = Wallet::find(Session::get('laravel_user_id'));
-		if($result){
+		if($user->parent_id != Session::get('laravel_user_id')){
+			return Response::json(array('error'=>1,'info' => '您不能激活该用户'));
+		}
+
+		DB::beginTransaction();
+
+		try{
+			$wallet = Wallet::findorFail(Session::get('laravel_user_id'));
+
 			$result = $wallet->reduceMoney(app('l_web')->active_money,-2);	//用户激活
 			if($result){
 				$user->status = 1;
@@ -130,6 +124,7 @@ class UserController extends CommonController {
 				$result = $user->save();
 			}
 		}
+
 
 		if ($result){
 			DB::commit();
@@ -140,6 +135,63 @@ class UserController extends CommonController {
         }
 	}
 
+
+	public function edit(){
+		$id = Request::input('id',0);
+
+		if($id){
+			$user = AuthUser::user();
+		}else{
+			$user = User::find($id);
+		}
+
+		return view('home.user.edit',array('user' => $user));
+	}
+
+	public function doEdit(){
+		$data = Request::input();
+
+		//过滤model ，一个一个赋值然后修改，判断用户修改的是不是自己，或者自己的下级
+
+		$user = new User();
+
+        $result = $user->save();
+
+		var_dump($result);
+		return redirect('home/userList');
+	}
+
+	public function editPass(){
+		return view('home.user.editPass');
+	}
+
+	public function doEditPass(){
+		$data = Request::input();
+
+		if($data['password'] != $data['confirm_password']){
+			return Redirect::back()->withInput($data)->withErrors('两次输入密码不一致');
+		}
+
+		$user = AuthUser::user();
+
+		if(!Hash::check($data['old_password'],$user['password'])){
+			return Redirect::back()->withInput($data)->withErrors('原密码不正确');
+		}
+
+		$user->password = bcrypt($data['password']);
+
+		$user->save();
+
+		return redirect('home/index');
+	}
+
+	public function selfUp(){
+		return view('home.user.selfUp');
+	}
+
+	public function doSelfUp(){
+		return redirect('home/selfUp');
+	}
 
 	public function nameUnique(){
 		$name = Request::input('name','');

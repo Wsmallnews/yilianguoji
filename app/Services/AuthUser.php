@@ -46,6 +46,14 @@ class AuthUser implements AuthUserContract {
 	    return $result;
 	}
 
+	// public function checkPassword($password,$old_password){
+	// 	if(Hash::check($password,$old_password)){
+    //         return true;
+    //     }else {
+	// 		return false;
+	// 	}
+	// }
+
 	//登出
 	public function logout(){
 	    Session::forget('laravel_user_id');

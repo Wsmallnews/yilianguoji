@@ -33,17 +33,29 @@ class User extends CommonModel{
 	    ];
 	}
 
-	//注册验证
-	public static function addRole(){
-	    return [
+    public static function addFastRole(){
+        return [
             'name' => 'required|unique:users',
-	        // 'nick_name' => 'required',
-	        'email' => 'required|email',
 	        'password' => 'required',
             'confirmPassword' => 'required|same:password',
+	    ];
+    }
+
+    public static function addFastRoleMsg(){
+	    return [
+            'name.required' => '用户名不能为空',
+            'name.unique' => '用户名已存在，请重新输入',
+	        'password.required' => '密码不能为空',
+            'confirmPassword.required' => '两次输入密码不一致',
+            'confirmPassword.same' => '两次输入密码不一致',
+	    ];
+	}
+
+	//注册验证
+	public static function editRole(){
+	    return [
+	        'email' => 'required|email|unique:users',
 	        'phone' => 'required|unique:users',
-	        'gender' => 'required',
-	        'birth' => 'required',
 	        'real_name' => 'required',
 	        'cert_no' => 'required',
 	        'card_type' => 'required',
@@ -52,20 +64,13 @@ class User extends CommonModel{
 	    ];
 	}
 
-	public static function addRoleMsg(){
+	public static function editRoleMsg(){
 	    return [
-            'name.required' => '用户名不能为空',
-            'name.required' => '用户名已存在，请重新输入',
-	        // 'nick_name.required' => '用户昵称不能为空',
 	        'email.required' => '邮箱不能为空',
 	        'email.email' => '邮箱格式不正确',
-	        'password.required' => '密码不能为空',
-            'confirmPassword.required' => '两次输入密码不一致',
-            'confirmPassword.same' => '两次输入密码不一致',
+            'email.unique' => '邮箱已存在，请重新输入',
 	        'phone.required' => '手机号不能为空',
 	        'phone.unique' => '手机号已存在',
-	        'gender.required' => '性别必须选择',
-	        'birth.required' => '生日不能为空',
 	        'real_name.required' => '真实姓名不能为空',
 	        'cert_no.required' => '身份证号不能为空',
 	        'card_type.required' => '账户类型必须选择',
@@ -75,20 +80,20 @@ class User extends CommonModel{
 	}
 
 	//获取一条邀请码
-	public function getOneInviCode($code = ''){
-        if(!empty($code)){
-            return $this->hasMany('App\InviteCode','u_id')->where('invi_code',$code)->where('status',0);
-        }else{
-            return $this->hasMany('App\InviteCode','u_id')->where('status',0);
-        }
-
-	}
+	// public function getOneInviCode($code = ''){
+    //     if(!empty($code)){
+    //         return $this->hasMany('App\InviteCode','u_id')->where('invi_code',$code)->where('status',0);
+    //     }else{
+    //         return $this->hasMany('App\InviteCode','u_id')->where('status',0);
+    //     }
+    //
+	// }
 
 
 	//获取所有支出队列
-	public function getAllOutQueue(){
-	    return $this->hasMany('App\OutQueue','u_id');
-	}
+	// public function getAllOutQueue(){
+	//     return $this->hasMany('App\OutQueue','u_id');
+	// }
 
     //获取当前用户钱包
 	public function getWalletOne(){
@@ -112,9 +117,5 @@ class User extends CommonModel{
 	    }
 	    return true;
 	}
-
-
-
-
 
 }

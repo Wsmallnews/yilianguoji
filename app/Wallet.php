@@ -38,25 +38,25 @@ class Wallet extends CommonModel{
 		DB::beginTransaction();
 
 		$this->money = $this->money + $money;
-		$result = $this->save();
 
-		if($result){
+		try {
+			$result = $this->save();
+
 			$walletLog = new WalletLog();
 			$walletLog->u_id = $this->id;
 			$walletLog->type_id = $type_id;
-			$walletLog->type = getType($type_id);
+			$walletLog->type = $this->getType($type_id);
 			$walletLog->money = $money;
 			$walletLog->status = 1;
 			$result = $walletLog->save();
-		}
 
-		if ($result){
 			DB::commit();
-		}else{
+			return true;
+		}catch(Exception $e) {
 			DB::rollback();
-		}
 
-		return $result;
+			return false;
+		}
 	}
 
 	//直接减去
@@ -68,25 +68,25 @@ class Wallet extends CommonModel{
 			return false;
 		}
 
-		$result = $this->save();
+		try {
+			$result = $this->save();
 
-		if($result){
 			$walletLog = new WalletLog();
 			$walletLog->u_id = $this->id;
 			$walletLog->type_id = $type_id;
-			$walletLog->type = getType($type_id);
+			$walletLog->type = $this->getType($type_id);
 			$walletLog->money = $money;
 			$walletLog->status = 1;
 			$result = $walletLog->save();
-		}
 
-		if ($result){
 			DB::commit();
-		}else{
+			return true;
+		}catch(Exception $e) {
 			DB::rollback();
+
+			return false;
 		}
 
-		return $result;
 	}
 
 	//减少余额，增加锁定余额，虚拟减少，不记录日志，处理成功记录钱包日志
@@ -117,25 +117,24 @@ class Wallet extends CommonModel{
 			return false;
 		}
 
-		$result = $this->save();
+		try {
+			$result = $this->save();
 
-		if($result){
 			$walletLog = new WalletLog();
 			$walletLog->u_id = $this->id;
 			$walletLog->type_id = $type_id;
-			$walletLog->type = getType($type_id);
+			$walletLog->type = $this->getType($type_id);
 			$walletLog->money = $money;
 			$walletLog->status = 1;
 			$result = $walletLog->save();
-		}
 
-		if ($result){
 			DB::commit();
-		}else{
+			return true;
+		}catch(Exception $e) {
 			DB::rollback();
-		}
 
-		return $result;
+			return false;
+		}
 	}
 
 	private function getType($type_id){

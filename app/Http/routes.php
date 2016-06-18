@@ -28,8 +28,17 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::get('userList', 'UserController@lists');
     Route::get('userAdd', 'UserController@add');
     Route::post('userDoAdd', 'UserController@doAdd');
-    Route::get('userActive', 'UserController@doUserActive');
-    Route::get('userNameUnique', 'UserController@nameUnique');
+    Route::get('userActive', 'UserController@doUserActive');    //激活
+    Route::get('userNameUnique', 'UserController@nameUnique');  //检测用户名是否重复
+
+    Route::get('userEdit', 'UserController@edit');              //修改用户信息
+    Route::post('userDoEdit', 'UserController@doEdit');
+    Route::get('userEditPass', 'UserController@editPass');      //修改密码
+    Route::post('userDoEditPass', 'UserController@doEditPass');
+    Route::get('userSelfUp', 'UserController@selfUp');          //会员自助升级
+    Route::post('userDoSelfUp', 'UserController@doSelfUp');
+
+
 
     //提现
     Route::get('cashList', 'CashController@lists');
@@ -88,11 +97,11 @@ Route::controllers([
 ]);
 
 
-Event::listen('illuminate.query', function($sql, $param)
-
-{
+// Event::listen('illuminate.query', function($sql, $param)
+//
+// {
 //Log::info($sql . ", with[" . join(',', $param) ."]");
 //var_dump($sql);//sql 预处理 语句
 //var_dump($param);
 
-});
+// });

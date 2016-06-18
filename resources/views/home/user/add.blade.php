@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>添加用户  - {{$l_web['web_name']}}</title>
+    <title>快速添加用户  - {{$l_web['web_name']}}</title>
 
 </head>
 
@@ -19,7 +19,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">添加会员</h1>
+                    <h1 class="page-header">快速添加会员</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -30,7 +30,7 @@
                         <label class="col-lg-3 control-label">用户名</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" onblur="validate('no')"/>
-                            将作为登录账号使用
+                            将作为登录账号使用，添加后不可修改
                         </div>
                     </div>
 
@@ -40,13 +40,6 @@
                             <input type="text" class="form-control" name="nick_name" value="{{ old('nick_name') }}" />
                         </div>
                     </div> -->
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">邮箱</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="email" value="{{ old('email') }}" />
-                        </div>
-                    </div>
 
                     <div class="form-group">
                         <label class="col-lg-3 control-label">密码</label>
@@ -59,80 +52,6 @@
                         <label class="col-lg-3 control-label">确认密码</label>
                         <div class="col-lg-5">
                             <input type="password" class="form-control" name="confirmPassword" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">手机</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="phone" value="{{ old('phone') }}" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">性别</label>
-                        <div class="col-lg-5">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="gender" id="inlineRadio1" value="male" @if(old('gender') == 'male') checked @endif /> 男
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="gender" id="inlineRadio2" value="female" @if(old('gender') == 'female') checked @endif /> 女
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="gender" id="inlineRadio3" value="other" @if(old('gender') == 'other' || old('gender') === null) checked @endif /> 其他
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">生日</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="birth" value="{{ old('birth') }}" /> 0000-00-00
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">真实姓名</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="real_name" value="{{ old('real_name') }}" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">身份证号</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="cert_no" value="{{ old('cert_no') }}" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">账户类型</label>
-                        <div class="col-lg-5">
-                            <select name="card_type" class="form-control">
-                                <option value="1" @if(old('card_type') == 1 ) selected @endif>支付宝</option>
-                                <option value="2" @if(old('card_type') == 2 ) selected @endif>银行卡</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">银行账户</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="card_no" value="{{ old('card_no') }}" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">现在激活</label>
-                        <div class="col-lg-5">
-                            <input type="checkbox" name="now_active" value="1" @if(old('now_active') == 1) checked @endif />
-                            现在激活将直接扣除{{$l_web->active_money}} 亿联币
                         </div>
                     </div>
 

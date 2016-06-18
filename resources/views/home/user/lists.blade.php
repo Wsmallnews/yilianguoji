@@ -27,7 +27,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                                                        我的会员列表
+                            我的会员列表
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" id="list_div">

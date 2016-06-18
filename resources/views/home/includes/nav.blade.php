@@ -134,7 +134,16 @@
                                     <a href="{{url('home/userList')}}">会员列表</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/userAdd')}}">添加会员</a>
+                                    <a href="{{url('home/userAdd')}}">快速添加会员</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/userEdit')}}">完善个人资料</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/userEditPass')}}">修改密码</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/userSelfUp')}}">自助升级</a>
                                 </li>
                             </ul>
                         </li>
