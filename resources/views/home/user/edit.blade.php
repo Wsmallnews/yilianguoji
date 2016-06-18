@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <label class="col-lg-3 control-label">手机</label>
                         <div class="col-lg-5">
-                            <input type="text" class="form-control" name="phone" value="{{ old('phone') }}" />
+                            <input type="text" class="form-control" name="phone" value="@if($user->exists){{{$user->phone}}}@else{{{ old('phone') }}}@endif" />
                             请填写正确的手机号
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                     <div class="form-group">
                         <label class="col-lg-3 control-label">结款账户</label>
                         <div class="col-lg-5">
-                            <input type="text" class="form-control" name="card_no" value="@if($user->exists){{{$user->cert_no}}}@else{{{ old('card_no') }}}@endif" />
+                            <input type="text" class="form-control" name="card_no" value="@if($user->exists){{{$user->card_no}}}@else{{{ old('card_no') }}}@endif" />
                         </div>
                     </div>
 

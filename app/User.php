@@ -38,6 +38,7 @@ class User extends CommonModel{
             'name' => 'required|unique:users',
 	        'password' => 'required',
             'confirmPassword' => 'required|same:password',
+            'parent_id' => 'required'
 	    ];
     }
 
@@ -48,34 +49,35 @@ class User extends CommonModel{
 	        'password.required' => '密码不能为空',
             'confirmPassword.required' => '两次输入密码不一致',
             'confirmPassword.same' => '两次输入密码不一致',
+            'parent_id.required' => '必须有邀请人'
 	    ];
 	}
 
 	//注册验证
-	public static function editRole(){
+	public static function editRole($id){
 	    return [
-	        'email' => 'required|email|unique:users',
-	        'phone' => 'required|unique:users',
-	        'real_name' => 'required',
-	        'cert_no' => 'required',
-	        'card_type' => 'required',
-	        'card_no' => 'required',
-            'parent_id' => 'required'
+	        'email' => 'email|unique:users,email,'.$id,
+	        'phone' => 'regex:/^1\d{10}$/|unique:users,phone,'.$id,
+	        // 'real_name' => 'required',
+	        // 'cert_no' => 'required',
+	        // 'card_type' => 'required',
+	        // 'card_no' => 'required',
+
 	    ];
 	}
 
 	public static function editRoleMsg(){
 	    return [
-	        'email.required' => '邮箱不能为空',
+	        // 'email.required' => '邮箱不能为空',
 	        'email.email' => '邮箱格式不正确',
             'email.unique' => '邮箱已存在，请重新输入',
-	        'phone.required' => '手机号不能为空',
-	        'phone.unique' => '手机号已存在',
-	        'real_name.required' => '真实姓名不能为空',
-	        'cert_no.required' => '身份证号不能为空',
-	        'card_type.required' => '账户类型必须选择',
-	        'card_no.required' => '银行账户不能为空',
-            'parent_id.required' => '必须有邀请人'
+	        // 'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号格式不正确',
+            'phone.unique' => '手机号已存在，请重新输入',
+	        // 'real_name.required' => '真实姓名不能为空',
+	        // 'cert_no.required' => '身份证号不能为空',
+	        // 'card_type.required' => '账户类型必须选择',
+	        // 'card_no.required' => '银行账户不能为空',
 	    ];
 	}
 

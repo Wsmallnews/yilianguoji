@@ -71,7 +71,7 @@ class UserController extends CommonController {
 		$data = Request::input();
 		$data['parent_id'] = Session::get('laravel_user_id');
 
-        $validate = Validator::make($data,User::addRole(),User::addRoleMsg());
+        $validate = Validator::make($data,User::addFastRole(),User::addFastRoleMsg());
 
         if($validate->fails()){
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors($validate->errors());
@@ -116,34 +116,26 @@ class UserController extends CommonController {
 		try{
 			$wallet = Wallet::findorFail(Session::get('laravel_user_id'));
 
+			// 扣除登录用户亿联币
 			$result = $wallet->reduceMoney(app('l_web')->active_money,-2);	//用户激活
-			if($result){
-				$user->status = 1;
-				$user->invi_at = date('Y-m-d H:i:s');
 
-				$result = $user->save();
-			}
-		}
+			//修改用户为已激活
+			$user->status = 1;
+			$user->invi_at = date('Y-m-d H:i:s');
 
+			$result = $user->save();
 
-		if ($result){
 			DB::commit();
-            return Response::json(array('error'=>0,'info' => '激活成功'));
-        }else{
+			return Response::json(array('error'=>0,'info' => '激活成功'));
+		}catch(Exception $e) {
 			DB::rollback();
             return Response::json(array('error'=>1,'info' => '激活失败'));
-        }
+		}
 	}
 
 
 	public function edit(){
-		$id = Request::input('id',0);
-
-		if($id){
-			$user = AuthUser::user();
-		}else{
-			$user = User::find($id);
-		}
+		$user = AuthUser::user();
 
 		return view('home.user.edit',array('user' => $user));
 	}
@@ -151,14 +143,19 @@ class UserController extends CommonController {
 	public function doEdit(){
 		$data = Request::input();
 
-		//过滤model ，一个一个赋值然后修改，判断用户修改的是不是自己，或者自己的下级
+		$validate = Validator::make($data,User::editRole(Session::get('laravel_user_id')),User::editRoleMsg());
 
-		$user = new User();
+        if($validate->fails()){
+            return Redirect::back()->withInput($data)->withErrors($validate->errors());
+        }
 
-        $result = $user->save();
+		//过滤model ，一个一个赋值然后修改，只能修改自己
+		$user = AuthUser::user();
+		$user->fill($data);
 
-		var_dump($result);
-		return redirect('home/userList');
+        $user->save();
+
+		return redirect('home/index');
 	}
 
 	public function editPass(){
