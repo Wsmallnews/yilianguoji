@@ -3,6 +3,7 @@ namespace App;
 
 use AuthUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use \Exception;
 
 class User extends CommonModel{
     use SoftDeletes;
@@ -15,7 +16,7 @@ class User extends CommonModel{
 
 	protected $hidden = ['password'];	//不出现在 数组或 JSON 格式的属性数据
 
-	protected $fillable = array('nick_name', 'email', 'password', 'phone', 'gender', 'birth', 'real_name', 'cert_no', 'card_type', 'card_no');
+	protected $fillable = array('name','parent_id','nick_name', 'email', 'password', 'phone', 'gender', 'birth', 'real_name', 'cert_no', 'card_type', 'card_no');
 
 	//登录验证
 	public static function loginRole(){
@@ -53,7 +54,7 @@ class User extends CommonModel{
 	    ];
 	}
 
-	//注册验证
+	//完善资料验证
 	public static function editRole($id){
 	    return [
 	        'email' => 'email|unique:users,email,'.$id,
@@ -106,6 +107,36 @@ class User extends CommonModel{
 	//     return $this->hasMany('App\InviteCode','u_id');
 	// }
 
+
+    //载入父级信息
+    public function parent(){
+        return $this->belongsTo('App\User','parent_id');
+    }
+
+
+    //获取指定上几级用户的id
+    public function getParents($level){
+
+        try{
+            $u_id = $this->id;
+            for($i = 0; $i < $level; $i++){
+                $parent = $this->findorFail($u_id);
+                $u_id = $parent['parent_id'];
+            }
+        }catch(Exception $e){
+            // $default_user = $this->where('name',app('l_web')->default_user)->first();
+            // $u_id = $default_user['id'] ? $default_user['id'] : 0;
+            $u_id = 0;
+        }
+
+        //验证u_id，因为for循环之后没有确定这个u_id 对应的用户是否被删除
+        $result = $this->find($u_id);
+        if(!$result){   //如果没有查到，设置为0
+            $u_id = 0;
+        }
+
+        return $u_id;
+    }
 
 
 	/*封号*/

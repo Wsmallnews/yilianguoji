@@ -30,7 +30,7 @@ var list = {
 	set_data : function (){
 		list.request_data = l.parseFormJson(list.search_id);
 
-		list.request_data['rows'] = 1;
+		list.request_data['rows'] = 15;
 
 	},
 

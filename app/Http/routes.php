@@ -36,8 +36,7 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::get('userEditPass', 'UserController@editPass');      //修改密码
     Route::post('userDoEditPass', 'UserController@doEditPass');
     Route::get('userSelfUp', 'UserController@selfUp');          //会员自助升级
-    Route::post('userDoSelfUp', 'UserController@doSelfUp');
-
+    Route::get('userDoSelfUp', 'UserController@doSelfUp');
 
 
     //提现
@@ -53,7 +52,9 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::get('setting', 'SettingController@setting');
     Route::post('settingDoEdit', 'SettingController@doEdit');
 
-
+    //公司分红
+    Route::get('shareMoney', 'UserController@shareMoney');
+    // Route::get('userDoSelfUp', 'UserController@doSelfUp');
 
 
 

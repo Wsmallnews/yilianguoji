@@ -8,6 +8,7 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldBeQueued;
 use App\User;
 use App\Wallet;
+use DB;
 
 class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
@@ -20,7 +21,7 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function __construct($id)
 	{
-		//
+		$this->id = $id;
 	}
 
 	/**
@@ -63,21 +64,34 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
 		$wallet = new Wallet();
 
-		//一级直推奖励
-		$parent_wallet = $wallet->find($userinfoP['id']);
-		if($parent_wallet){
-			$parent_wallet->increaseMoney($direct_prize,1);
-		}
+		DB::beginTransaction();
+		try{
+			//一级直推奖励
+			$parent_wallet = $wallet->findorFail($userinfoP['id']);
 
-		//五级见点奖励
-		foreach($five_parent as $key => $value){
-			if(!empty($value)){
-				$result = $wallet->find($value);
-				if($result){
-					$result->increaseMoney($see_prize,2);
+			$result = $parent_wallet->increaseMoney($direct_prize,1);
+			if(!$result){
+				throw new Exception("钱包编辑失败");
+			}
+
+			//五级见点奖励
+			foreach($five_parent as $key => $value){
+				if(!empty($value)){
+					$see_wallet = $wallet->findorFail($value);
+
+					$result = $see_wallet->increaseMoney($see_prize,2);
+					if(!$result){
+						throw new Exception("钱包编辑失败");
+					}
 				}
 			}
+			DB::commit();
+			return true;
+		}catch(Exception $e){
+			DB::rollback();
+			return false;
 		}
+
 	}
 
 }

@@ -39,12 +39,23 @@ var l = {
 	success : function(msg){
 		alert(msg);
 	},
+	confirm : function(msg){
+		if(confirm(msg)){
+			return true;
+		}else{
+			return false;
+		}
+	},
 	location : function(url){
 		if(url != undefined){
 			window.location.href = url;
 			return;
 		}
 		window.history.go(-1);
+	},
+	reload : function(){
+		window.location.reload();
+		return;
 	}
 
 }

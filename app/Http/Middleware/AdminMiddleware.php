@@ -23,11 +23,10 @@ class AdminMiddleware {
 	public function handle($request, Closure $next)
 	{
 
-	    if(Session::get('laravel_user_id') != 0 || Session::get('laravel_user_id') === null){
-	        // return Redirect::back()->withErrors('对不起，您没有操作权限');
+	    if(Session::get('laravel_user_id') === 1){
+			return $next($request);
+	    }else{
 			return redirect('home/index')->withErrors('对不起，您没有操作权限');
-	    }
-
-		return $next($request);
+		}
 	}
 }

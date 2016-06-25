@@ -58,44 +58,34 @@ class CashController extends CommonController {
     }
 
     public function doAdd() {
-		// $l_web = app('l_web');
-
-		// $inviteCode = new InviteCode();
-		DB::beginTransaction();
+		$user_id = Session::get('laravel_user_id');
 
         $data = Request::input();
-
-        // $validate = Validator::make($data,Cash::addRole(),Cash::addRoleMsg());
-		//
-        // if($validate->fails()){
-        //     return Redirect::back()->withInput(Request::input())->withErrors($validate->errors());
-        // }
 
 		if($data['money'] <= 0){
 			return Redirect::back()->withInput(Request::input())->withErrors('提现金额必须大于0');
 		}
 
-		//扣除钱包余额，增加锁定余额
-		$result = AuthUser::user()->getWalletOne()->first();
+		DB::beginTransaction();
+		try{
+			//扣除钱包余额，增加锁定余额
+			$wallet = Wallet::findorFail($user_id);
 
-		if($result){
-			$result = $result->virtualReduceMoney($data['money']);
-		}
+			$result = $wallet->virtualReduceMoney($data['money']);
 
-		if($result){
+			if(!$result){
+				throw new Exception("钱包余额不足，无法提现");
+			}
 			$cash = new Cash($data);
+			$cash->u_id = $user_id;
+			$cash->save();
 
-	        $cash->u_id = Session::get('laravel_user_id');
-
-	        $result = $cash->save();
-		}
-
-        if ($result){
 			DB::commit();
-            return redirect()->intended('home/cashList');
-        }else{
+	        return redirect()->intended('home/cashList');
+
+		}catch(Exception $e){
 			DB::rollback();
-            return Redirect::back()->withInput(Request::input())->withErrors('提现申请失败');
-        }
+			return Redirect::back()->withInput(Request::input())->withErrors('余额不足，无法提现');
+		}
     }
 }

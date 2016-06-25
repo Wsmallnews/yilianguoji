@@ -113,13 +113,6 @@ class IndexController extends CommonController {
 
         if (AuthUser::attempt($data)){
 			//登录成功
-			$u_id = Session::get('laravel_user_id');
-			$wallet = new Wallet();
-			$result = $wallet->find($u_id);
-			if(!$result){
-				$wallet->doAdd($u_id);
-			}
-
             return redirect()->intended('home/index');
         }else{
             return Redirect::back()->withInput(Request::except('password'))->withErrors('密码错误');

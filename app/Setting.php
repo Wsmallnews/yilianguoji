@@ -17,7 +17,7 @@ class Setting extends CommonModel{
 	        'active_money' => 'required|min:0',
 			'direct_prize' => 'required|min:0',
 			'see_prize' => 'required|min:0',
-			'repeat_scale' => 'required',
+			'repeat_scale' => 'required|regex:/^0\.\d{1,2}$/',
 	    ];
 	}
 
@@ -31,6 +31,7 @@ class Setting extends CommonModel{
 			'see_prize.required' => '见点奖必须填写',
 			'see_prize.min' => '见点奖必须大于0',
 			'repeat_scale.required' => '重消比例必须填写',
+			'repeat_scale.regex' => '重消比例不能小于0，且不能大于1',
 			// 'repeat_scale.min' => '重消比例不能小于0',
 			// 'repeat_scale.max' => '重消比例不能大于1'
 	    ];

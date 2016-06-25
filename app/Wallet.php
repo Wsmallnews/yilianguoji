@@ -1,6 +1,8 @@
 <?php
 namespace App;
 use DB;
+use AuthUser;
+use \Exception;
 
 class Wallet extends CommonModel{
 
@@ -36,7 +38,7 @@ class Wallet extends CommonModel{
 	//直接增加
 	public function increaseMoney($money,$type_id){
 		DB::beginTransaction();
-
+		$user = AuthUser::user();
 		$this->money = $this->money + $money;
 
 		try {
@@ -45,7 +47,7 @@ class Wallet extends CommonModel{
 			$walletLog = new WalletLog();
 			$walletLog->u_id = $this->id;
 			$walletLog->type_id = $type_id;
-			$walletLog->type = $this->getType($type_id);
+			$walletLog->type = $type_id == 4 ? ($this->getType($type_id)."：用户名为“".$user->name."”的用户自助升级") : $this->getType($type_id);
 			$walletLog->money = $money;
 			$walletLog->status = 1;
 			$result = $walletLog->save();
@@ -62,13 +64,14 @@ class Wallet extends CommonModel{
 	//直接减去
 	public function reduceMoney($money,$type_id){
 		DB::beginTransaction();
-		$this->money = $this->money - $money;
-
-		if($this->money < 0){
-			return false;
-		}
 
 		try {
+			$this->money = $this->money - $money;
+
+			if($this->money < 0){
+				throw new Exception("钱包余额不足，请进行充值");
+			}
+
 			$result = $this->save();
 
 			$walletLog = new WalletLog();
@@ -83,10 +86,8 @@ class Wallet extends CommonModel{
 			return true;
 		}catch(Exception $e) {
 			DB::rollback();
-
 			return false;
 		}
-
 	}
 
 	//减少余额，增加锁定余额，虚拟减少，不记录日志，处理成功记录钱包日志
@@ -110,14 +111,14 @@ class Wallet extends CommonModel{
 	public function realReduceMoney($money,$type_id){
 		DB::beginTransaction();
 
-		//减少锁定余额
-		$this->money_lock = $this->money_lock + $money;
-
-		if($this->money_lock < 0){
-			return false;
-		}
-
 		try {
+			//减少锁定余额
+			$this->money_lock = $this->money_lock + $money;
+
+			if($this->money_lock < 0){
+				throw new Exception("钱包锁定余额不足");
+			}
+
 			$result = $this->save();
 
 			$walletLog = new WalletLog();
@@ -148,11 +149,17 @@ class Wallet extends CommonModel{
 			case 3 :
 				$type = '平分奖励';
 				break;
+			case 4 :
+				$type = '互助奖励';
+				break;
 			case -1 :
 				$type = '提现';
 				break;
 			case -2 :
 				$type = '激活用户';
+				break;
+			case -3 :
+				$type = '自助升级';
 				break;
 			default :
 				$type = '未知';

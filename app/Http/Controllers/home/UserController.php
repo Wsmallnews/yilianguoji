@@ -11,6 +11,10 @@ use Response;
 use App\Wallet;
 use DB;
 use Hash;
+use App\AutoUp;
+use Queue;
+use App\Commands\SeePrize;
+use \Exception;
 
 class UserController extends CommonController {
 
@@ -40,7 +44,7 @@ class UserController extends CommonController {
             $where['parent_id'] = $user_id;
         }
 
-        $user_list = User::where($where)->paginate($pageRow);
+        $user_list = User::where($where)->with('parent')->paginate($pageRow);
 
 	    if(Request::ajax()){
 
@@ -87,14 +91,19 @@ class UserController extends CommonController {
 	        $user = new User($data);
 			$result = $user->save();
 
+			$u_id = $user->id;
+			$wallet = new Wallet();
+			$result = $wallet->find($u_id);
+			if(!$result){
+				$wallet->doAdd($u_id);
+			}
+
 			DB::commit();
 			return redirect('home/userList');
 		}catch(Exception $e) {
 			DB::rollback();
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('添加失败');
 		}
-
-		// Queue::push(new SeePrize($user->id));
     }
 
 
@@ -118,12 +127,19 @@ class UserController extends CommonController {
 
 			// 扣除登录用户亿联币
 			$result = $wallet->reduceMoney(app('l_web')->active_money,-2);	//用户激活
+			if(!$result){
+				//钱包执行失败
+				throw new Exception("钱包余额不足，请进行充值");
+			}
 
 			//修改用户为已激活
 			$user->status = 1;
 			$user->invi_at = date('Y-m-d H:i:s');
 
 			$result = $user->save();
+
+			//添加队列
+			Queue::push(new SeePrize($id));
 
 			DB::commit();
 			return Response::json(array('error'=>0,'info' => '激活成功'));
@@ -183,11 +199,57 @@ class UserController extends CommonController {
 	}
 
 	public function selfUp(){
-		return view('home.user.selfUp');
+		$user = AuthUser::user();
+		$auto_up = AutoUp::get();
+
+		return view('home.user.selfUp',array('user' => $user,'auto_up' => $auto_up));
 	}
 
 	public function doSelfUp(){
-		return redirect('home/selfUp');
+		$user = AuthUser::user();
+
+		if($user->rank >= 10){
+			return Response::json(array('error'=>1,'info' => '您的等级已经达到最高，不能进行升级'));
+		}
+
+		DB::beginTransaction();
+		try{
+			$rank = $user->rank + 1;	//将要升到这个级别
+			$auto_up = AutoUp::where('rank' , $rank)->firstOrFail();
+			$need_money = $auto_up->need_money;		//升到这个级别需要的亿联币
+
+			$wallet = Wallet::findorFail(Session::get('laravel_user_id'));
+
+			// 自助升级，扣除自己亿联币
+			$result = $wallet->reduceMoney($need_money,-3);
+			if(!$result){
+				//钱包执行失败
+				throw new Exception("钱包余额不足，请进行充值");
+			}
+
+			// 自助升级，给上级用户 增加亿联币
+			$level_parent_id = $user->getParents($rank);
+			$walletP = Wallet::findorFail($level_parent_id);
+
+			$end_need_money = app('l_web')->repeat_scale * $need_money;
+			$result = $walletP->increaseMoney($end_need_money,4);
+			if(!$result){
+				//钱包执行失败，给用户互助奖励失败
+				throw new Exception("钱包编辑失败");
+			}
+
+			//修改用户等级
+			$user->rank = $rank;
+
+			$result = $user->save();
+
+			DB::commit();
+			return Response::json(array('error'=>0,'info' => '自助升级成功'));
+		}catch(Exception $e) {
+			//可以捕获 throw 扔出的，也可以捕获 findorFail 扔出的  findorFail 会抛出具体信息 所以不使用$e->getMessage();作为返回结果
+			DB::rollback();
+            return Response::json(array('error'=>1,'info' => '自助升级失败'));
+		}
 	}
 
 	public function nameUnique(){
@@ -201,19 +263,63 @@ class UserController extends CommonController {
 		}
 	}
 
-	public function createName(){
-	    $success = true;
+	// public function createName(){
+	//     $success = true;
+	//
+	//     do{
+	//         //生成唯一用户str
+    // 	    $str = 'yl';
+	//
+    // 	    $str .= mt_rand(10000000,99999999);
+	//
+    // 	    $count = User::where('name' , $str)->count();
+	//     }while($count > 0);
+	//
+	//     return $str;
+	// }
 
-	    do{
-	        //生成唯一用户str
-    	    $str = 'yl';
+	//平分奖励
+	public function shareMoney(){
+		$where['status'] = 1;	//必须是已经激活的用户
+		$user_list = User::where($where)->get();
 
-    	    $str .= mt_rand(10000000,99999999);
+		//总会员数
+		$user_count = count($user_list);
 
-    	    $count = User::where('name' , $str)->count();
-	    }while($count > 0);
+		//获取公司今日新增业绩
+		$date = date('Y-m-d');
+		$user_today_count = User::where($where)->where('invi_at','like',$date."%")->count();
 
-	    return $str;
+		$today_money = $user_today_count * app('l_web')->active_money;
+
+		if($today_money < app('l_web')->low_share_money){
+			//如果今日公司新增业绩小于low_share_money，就不进行评分操作，直接进行日志记录
+
+		}else{
+			$share_money = $today_money * app('l_web')->share_money_scale;
+
+			$wallet = new Wallet();
+			$every_money = $share_money / $user_count;	//每人应得金额
+
+			DB::beginTransaction();
+
+			try{
+				foreach($userList as $key => $value){
+					$u_wallet = $wallet->find($value->id);
+					if($u_wallet){
+						$result = $u_wallet->increaseMoney($every_money,3);
+						if(!$result){
+							throw new Exception("钱包编辑失败---用户id=".$value->id);
+						}
+					}
+				}
+				DB::commit();
+				return true;
+			}catch(Exception $e){
+				DB::rollback();
+				return false;
+			}
+		}
 	}
 
 }
