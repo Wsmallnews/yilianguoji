@@ -16,27 +16,25 @@ var list = {
 		$(list.div_id).on('click','li.page_num',function(){
 	    	var url = $(this).find('a').attr('url');
 	    	list.request_url = (url !== undefined && url != null && url != '') ? url : list.current_url;
-
+			list.set_data();
 	    	list.load_request();
 	    });
 
 		//绑定搜索
 	    $("#search").on('click',function(){
 	    	list.request_url = list.current_url;
-
+			list.set_data();
 	    	list.load_request();
 	    })
 	},
-	set_data : function (){
-		list.request_data = l.parseFormJson(list.search_id);
+	set_data : function (data){
+		list.request_data = data == undefined ? l.parseFormJson(list.search_id) : data;
 
 		list.request_data['rows'] = 15;
 
 	},
 
 	load_request : function (){
-		list.set_data();
-
 		l.ajax({
             url:list.request_url,
             data:list.request_data,
@@ -52,8 +50,17 @@ var list = {
 	},
 	reload : function () {
 		list.request_url = list.current_url;
+
+		list.set_data();
 		list.load_request();
-	}
+	},
+	search_list : function (data) {
+		list.request_url = list.current_url;
+
+		list.set_data(data);
+		list.load_request();
+	},
+
 }
 
 var autoloadMethod = {

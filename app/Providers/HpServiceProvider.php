@@ -4,6 +4,7 @@ use Illuminate\Support\ServiceProvider;
 use View;
 use App\Setting;
 use Session;
+use AuthUser;
 
 class HpServiceProvider extends ServiceProvider {
 
@@ -20,7 +21,6 @@ class HpServiceProvider extends ServiceProvider {
 		//
 		// Session::put('l_web',$l_web);
 		// //所有视图共享数据
-	    View::share('l_web', $this->app['l_web']);
 	}
 
 	/**

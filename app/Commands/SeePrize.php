@@ -9,6 +9,8 @@ use Illuminate\Contracts\Queue\ShouldBeQueued;
 use App\User;
 use App\Wallet;
 use DB;
+use Log;
+use \Exception;
 
 class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
@@ -71,7 +73,7 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
 			$result = $parent_wallet->increaseMoney($direct_prize,1);
 			if(!$result){
-				throw new Exception("钱包编辑失败");
+				throw new Exception("直推奖励-钱包编辑失败，用户id为：".$parent_wallet->id."日志结束");
 			}
 
 			//五级见点奖励
@@ -81,13 +83,14 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
 					$result = $see_wallet->increaseMoney($see_prize,2);
 					if(!$result){
-						throw new Exception("钱包编辑失败");
+						throw new Exception("见点奖-钱包编辑失败，用户id为：".$see_wallet->id."日志结束");
 					}
 				}
 			}
 			DB::commit();
 			return true;
 		}catch(Exception $e){
+			Log::info('catchError',['message',$e->getMessage()]);
 			DB::rollback();
 			return false;
 		}

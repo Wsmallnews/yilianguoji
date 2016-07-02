@@ -54,10 +54,14 @@ return [
 
 		'mysql' => [
 			'driver'    => 'mysql',
-			'host'      => env('DB_HOST', 'qdm127364405.my3w.com'),
-			'database'  => env('DB_DATABASE', 'qdm127364405_db'),
-			'username'  => env('DB_USERNAME', 'qdm127364405'),
-			'password'  => env('DB_PASSWORD', 'smallnews'),
+			// 'host'      => env('DB_HOST', 'qdm127364405.my3w.com'),
+			// 'database'  => env('DB_DATABASE', 'qdm127364405_db'),
+			// 'username'  => env('DB_USERNAME', 'qdm127364405'),
+			// 'password'  => env('DB_PASSWORD', 'smallnews'),
+			'host'      => env('DB_HOST', 'my3471412.xincache2.cn'),
+			'database'  => env('DB_DATABASE', 'my3471412'),
+			'username'  => env('DB_USERNAME', 'my3471412'),
+			'password'  => env('DB_PASSWORD', 'M9b7R9X7'),
 			'charset'   => 'utf8',
 			//'collation' => 'utf8_unicode_ci',
 			'collation' => 'utf8_general_ci',

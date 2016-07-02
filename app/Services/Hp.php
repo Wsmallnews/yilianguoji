@@ -34,4 +34,9 @@ class Hp implements HpContract {
 	    return $fields;
 	}
 
+	public function str_float($float,$bit = 2){
+		$accuracy = "%.".$bit."f";
+		return sprintf($accuracy, $float);
+	}
+
 }

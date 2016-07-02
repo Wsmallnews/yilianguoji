@@ -12,7 +12,7 @@ use App\WalletLog;
 use Session;
 use Hp;
 use DB;
-
+use \Exception;
 use Queue;
 use App\Commands\SeePrize;
 use Artisan;
@@ -37,7 +37,7 @@ class IndexController extends CommonController {
 	 */
 	public function __construct()
 	{
-		$this->middleware('home');
+		//$this->middleware('home');
 	}
 
 	/**
@@ -47,6 +47,14 @@ class IndexController extends CommonController {
 	 */
 	public function index()
 	{
+		// try{
+		// 	$user = Wallet::findOrFail(123);
+		// 	if($user->money != 0){
+		// 		throw new Exception('该申请已处理，不需再次处理');
+		// 	}
+		// }catch(Exception $e){
+		// 	print_r($e->getMessage());
+		// }
 		// $a = 'smallnews';
 		// echo bcrypt('smallnews').'<br>';
 		// echo bcrypt($a).'<br>';

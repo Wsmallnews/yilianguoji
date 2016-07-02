@@ -8,6 +8,7 @@
                                             <th>驳回原因</th>
                                             <th>提现时间</th>
                                             <th>处理时间</th>
+                                            @if($l_user->superMan && Route::currentRouteName() == 'cashAdmin')<th>操作</th>@endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -20,6 +21,7 @@
                                             <td>{{$list->fail_msg}}</td>
                                             <td>{{$list->created_at}}</td>
                                             <td>{{$list->updated_at}}</td>
+                                            @if($l_user->superMan && Route::currentRouteName() == 'cashAdmin')<td>@if($list->status == 0)<button type="button" class="btn btn-success oper_btn" status="1">同意申请</button>  <button type="button" class="btn btn-primary oper_btn" status="-1">驳回申请</button>@endif</td>@endif
                                         </tr>
                                     @endforeach
                                     </tbody>

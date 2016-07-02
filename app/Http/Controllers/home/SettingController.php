@@ -18,8 +18,8 @@ class SettingController extends CommonController {
 	 */
 	public function __construct()
 	{
-		$this->middleware('home');
-		$this->middleware('admin');
+		//$this->middleware('home');
+		//$this->middleware('admin');
 	}
 
 

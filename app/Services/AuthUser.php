@@ -42,7 +42,13 @@ class AuthUser implements AuthUserContract {
 	//获取用户信息
 	public function user(){
 	    $result = User::find(Session::get('laravel_user_id'));
-
+		if($result){
+			if(Session::get('laravel_user_id') === 1){
+				$result->superMan = true;
+			}else{
+				$result->superMan = false;
+			}
+		}
 	    return $result;
 	}
 

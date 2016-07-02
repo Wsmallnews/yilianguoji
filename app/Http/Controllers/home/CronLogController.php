@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\home;
 
-use App\WalletLog;
+use App\Cash;
 use Request;
 use Validator;
 use Redirect;
@@ -11,7 +11,7 @@ use Response;
 use App\Wallet;
 use DB;
 
-class WalletLogController extends CommonController {
+class CronLogController extends CommonController {
 
 	/**
 	 * Create a new controller instance.
@@ -35,18 +35,20 @@ class WalletLogController extends CommonController {
 
 	    $where = array();
 
-        $where['u_id'] = $user_id;
+        if(!empty($user_id)){
+            $where['u_id'] = $user_id;
+        }
 
-        $wallet_list = WalletLog::where($where)->with('user')->paginate($pageRow);
+        $cash_list = Cash::where($where)->with('user')->paginate($pageRow);
 
 	    if(Request::ajax()){
 
-	        $view = view('home.walletLog.li',array('wallet_list' => $wallet_list));
+	        $view = view('home.cash.li',array('cash_list' => $cash_list));
 
 	        return Response::json(array('error'=>0,'data'=>array('html'=>$view->render())));
 
 	    }else{
-	        return view('home.walletLog.lists',array('wallet_list' => $wallet_list));
+	        return view('home.cash.lists',array('cash_list' => $cash_list));
 	    }
 	}
 

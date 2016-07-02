@@ -15,7 +15,7 @@
 
 
 //前台路由组
-Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
+Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'], function()
 {
 
     Route::match(['get','post'],'login', array('as' => 'login','uses' => 'IndexController@login'));
@@ -37,7 +37,7 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::post('userDoEditPass', 'UserController@doEditPass');
     Route::get('userSelfUp', 'UserController@selfUp');          //会员自助升级
     Route::get('userDoSelfUp', 'UserController@doSelfUp');
-
+    Route::get('userNetwork', 'UserController@userNetwork');
 
     //提现
     Route::get('cashList', 'CashController@lists');
@@ -48,54 +48,33 @@ Route::group(['prefix' => 'home', 'namespace' => 'home'], function()
     Route::get('myWallet', 'WalletController@wallet');
     Route::get('walletLog', 'WalletLogController@lists');
 
-    //系统设置
-    Route::get('setting', 'SettingController@setting');
-    Route::post('settingDoEdit', 'SettingController@doEdit');
-
     //公司分红
     Route::get('shareMoney', 'UserController@shareMoney');
-    // Route::get('userDoSelfUp', 'UserController@doSelfUp');
+    Route::get('rankShareMoney', 'UserController@rankShareMoney');
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    Route::get('createGive', 'InviteCodeController@createGive');
-    Route::get('inviLists', 'InviteCodeController@lists');
-
-    Route::get('inList', 'InQueueController@lists');
-    Route::get('inAdd', 'InQueueController@add');
-    Route::post('inDoAdd', 'InQueueController@doAdd');
-
-    Route::get('outList', 'OutQueueController@lists');
-    Route::get('outAdd', 'OutQueueController@add');
-    Route::post('outDoAdd', 'OutQueueController@doAdd');
-
+    //超级管理员分组
+    Route::group(['middleware' => 'admin'],function(){
+        //系统设置
+        Route::get('setting', 'SettingController@setting');
+        Route::post('settingDoEdit', 'SettingController@doEdit');
+        Route::get('walletUp', 'WalletController@walletUp');
+        Route::post('doWalletUp', 'WalletController@doWalletUp');
+        Route::get('cashAdminList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));
+        Route::get('doApply', 'CashController@doApply');
+        Route::get('adminUserNetwork/{keyword?}', 'UserController@adminUserNetwork');
+    });
 });
 
 
-
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
-
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+Route::group(['middleware' => 'home'],function(){
+    Route::get('/', 'home\IndexController@login');
+    Route::get('home', 'home\IndexController@login');
+});
+// Route::controllers([
+// 	'auth' => 'Auth\AuthController',
+// 	'password' => 'Auth\PasswordController',
+// ]);
 
 
 // Event::listen('illuminate.query', function($sql, $param)

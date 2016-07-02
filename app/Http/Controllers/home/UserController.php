@@ -15,6 +15,9 @@ use App\AutoUp;
 use Queue;
 use App\Commands\SeePrize;
 use \Exception;
+use App\CronLog;
+use Hp;
+use Log;
 
 class UserController extends CommonController {
 
@@ -25,7 +28,7 @@ class UserController extends CommonController {
 	 */
 	public function __construct()
 	{
-		$this->middleware('home');
+		//$this->middleware('home');
 	}
 
 	/**
@@ -35,6 +38,7 @@ class UserController extends CommonController {
 	 */
 	public function lists() {
 	    $pageRow = Request::input('rows',15);
+		$pageRow = Request::input('rows',15);
 
 	    $user_id = Session::get('laravel_user_id');
 
@@ -116,9 +120,9 @@ class UserController extends CommonController {
 			return Response::json(array('error'=>1,'info' => '该用户已激活，不需要重复激活'));
 		}
 
-		if($user->parent_id != Session::get('laravel_user_id')){
-			return Response::json(array('error'=>1,'info' => '您不能激活该用户'));
-		}
+		// if($user->parent_id != Session::get('laravel_user_id')){
+		// 	return Response::json(array('error'=>1,'info' => '您不能激活该用户'));
+		// }
 
 		DB::beginTransaction();
 
@@ -252,6 +256,87 @@ class UserController extends CommonController {
 		}
 	}
 
+
+	public function userNetwork(){
+
+		$user = AuthUser::user();
+
+		$user_id = $user['id'];
+
+		$son_list = User::where('parent_id',$user_id)->orderBy('id', 'asc')->get()->toArray();
+
+		foreach($son_list as $key => $value){
+			$grandson_list = User::where('parent_id',$value['id'])->orderBy('id', 'asc')->get()->toArray();
+			$son_list[$key]['grandson'] = $grandson_list;
+		}
+
+		return view('home.user.userNetwork',array('user' => $user,'son_list' => $son_list));
+	}
+
+	public function adminUserNetwork($keyword = ''){
+		if(!empty($keyword)){
+			$user = User::where('name','like','%'.$keyword.'%')->first()->toArray();
+		}else{
+			$user = AuthUser::user()->toArray();
+		}
+		$user_id = $user['id'];
+
+		$str = $this->getUserNet($user_id);
+
+		return view('home.user.adminUserNetwork',array('user' => $user,'str' => $str,'keyword' => $keyword));
+	}
+
+	//获取用户递归列表
+	public function getUserNet($user_id){
+		$son_list = User::where('parent_id',$user_id)->orderBy('id', 'asc')->get()->toArray();
+
+		$str = '';
+		foreach($son_list as $key => $value){
+			$str .= '<div class="col-lg-4 col-xs-4">'.
+				'<div class="middle_son">'.
+					'<div class="panel panel-primary">'.
+						'<div class="panel-heading">'.
+							$value['name'].
+						'</div>'.
+						'<div class="panel-body">'.
+							'<p>等级：<span>'.$value['rank'].'</span></p>'.
+						'</div>'.
+						'<div class="panel-footer">'.
+						'</div>'.
+					'</div>'.
+				'</div>'.
+				'<div class="middle">'.
+					'<img src="'.asset('/home/images/network.png').'" width="100%" height="50" />'.
+				'</div>'.
+				'<div class="row">';
+
+			$str .= $this->getUserNet($value['id']);
+
+			$str .= '</div>'.
+			'</div>';
+		}
+		return $str;
+	}
+
+	// function get_array($id=0){
+	//     $sql = "select id,title from class where pid= $id";
+	//     $result = mysql_query($sql,$conn);//查询子类
+	//     $arr = array();
+	//     if($result && mysql_affected_rows()){//如果有子类
+	//         while($rows=mysql_fetch_assoc($result)){ //循环记录集
+	//             $rows['list'] = get_array($rows['id']); //调用函数，传入参数，继续查询下级
+	//             $arr[] = $rows; //组合数组
+	//         }
+	//         return $arr;
+	//     }
+	// }
+// $list = get_array(0); //调用函数
+// print_r($list); //输出数组
+
+
+
+
+
 	public function nameUnique(){
 		$name = Request::input('name','');
 		$result = User::where('name',$name)->count();
@@ -277,49 +362,5 @@ class UserController extends CommonController {
 	//
 	//     return $str;
 	// }
-
-	//平分奖励
-	public function shareMoney(){
-		$where['status'] = 1;	//必须是已经激活的用户
-		$user_list = User::where($where)->get();
-
-		//总会员数
-		$user_count = count($user_list);
-
-		//获取公司今日新增业绩
-		$date = date('Y-m-d');
-		$user_today_count = User::where($where)->where('invi_at','like',$date."%")->count();
-
-		$today_money = $user_today_count * app('l_web')->active_money;
-
-		if($today_money < app('l_web')->low_share_money){
-			//如果今日公司新增业绩小于low_share_money，就不进行评分操作，直接进行日志记录
-
-		}else{
-			$share_money = $today_money * app('l_web')->share_money_scale;
-
-			$wallet = new Wallet();
-			$every_money = $share_money / $user_count;	//每人应得金额
-
-			DB::beginTransaction();
-
-			try{
-				foreach($userList as $key => $value){
-					$u_wallet = $wallet->find($value->id);
-					if($u_wallet){
-						$result = $u_wallet->increaseMoney($every_money,3);
-						if(!$result){
-							throw new Exception("钱包编辑失败---用户id=".$value->id);
-						}
-					}
-				}
-				DB::commit();
-				return true;
-			}catch(Exception $e){
-				DB::rollback();
-				return false;
-			}
-		}
-	}
 
 }

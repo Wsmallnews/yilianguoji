@@ -1,3 +1,11 @@
+        <style>
+        .navbar-header{height:80px;}
+        .navbar-top-links{height:80px;}
+        @media (min-width: 768px){
+            .sidebar {margin-top:81px;}
+        }
+        .navbar-top-links .dropdown-messages {width:auto;}
+        </style>
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -6,12 +14,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{url('home/index')}}">{{$l_web['web_name']}}</a>
+                <a class="navbar-brand" href="{{url('home/index')}}"><img src="{{ asset('/home/images/logo.jpg') }}" width="80" height="50" /></a>
             </div>
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
+                <!--<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
@@ -34,11 +42,11 @@
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
-                    </ul>
+                    </ul>-->
                     <!-- /.dropdown-messages -->
-                </li>
+                <!--</li>-->
                 <!-- /.dropdown -->
-                <li class="dropdown">
+                <!--<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
@@ -67,9 +75,9 @@
                         </li>
                     </ul>
                     <!-- /.dropdown-tasks -->
-                </li>
+                <!--</li>-->
                 <!-- /.dropdown -->
-                <li class="dropdown">
+                <!--<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
@@ -91,16 +99,16 @@
                         </li>
                     </ul>
                     <!-- /.dropdown-alerts -->
-                </li>
+                <!--</li>-->
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> 我的资料</a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> {{$l_user['name']}}</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
+                        <li><a href="{{url('home/userEdit')}}"><i class="fa fa-edit fa-fw"></i> 完善资料</a>
                         </li>
                         <li class="divider"></li>
                         <li><a href="{{url('home/logout')}}"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
@@ -145,6 +153,9 @@
                                 <li>
                                     <a href="{{url('home/userSelfUp')}}">自助升级</a>
                                 </li>
+                                <li>
+                                    <a href="{{url('home/userNetwork')}}">拓扑图管理</a>
+                                </li>
                             </ul>
                         </li>
 
@@ -170,47 +181,27 @@
                                 </li>
                             </ul>
                         </li>
+
+                        @if($l_user->superMan)
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 系统设置<span class="fa arrow"></a>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/setting')}}">系统设置</a>
                                 </li>
-                            </ul>
-                        </li>
-
-                        <!-- <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 支出队列<span class="fa arrow"></a>
-                            <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{{url('home/outList')}}">排队列表</a>
+                                    <a href="{{url('home/walletUp')}}">用户钱包充值</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/outAdd')}}">添加排队</a>
+                                    <a href="{{url('home/cashAdminList')}}">提现申请</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/adminUserNetwork')}}">拓扑图管理</a>
                                 </li>
                             </ul>
                         </li>
+                        @endif
 
-                        <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 第二个菜单<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="flot.html">第二级一</a>
-                                </li>
-                                <li>
-                                    <a href="morris.html"><span class="fa arrow"></span>第二级二</a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#"></a>
-                                        </li>
-                                        <li>
-                                            <a href="#">第三级一</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul> -->
-                            <!-- /.nav-second-level -->
-                        <!-- </li> -->
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

@@ -3,6 +3,7 @@ namespace App;
 use DB;
 use AuthUser;
 use \Exception;
+use Log;
 
 class Wallet extends CommonModel{
 
@@ -55,8 +56,8 @@ class Wallet extends CommonModel{
 			DB::commit();
 			return true;
 		}catch(Exception $e) {
+			Log::info('catchError',['message',$e->getMessage()."钱包直接增加，用户id为：".$this->id."日志结束"]);
 			DB::rollback();
-
 			return false;
 		}
 	}
@@ -85,6 +86,7 @@ class Wallet extends CommonModel{
 			DB::commit();
 			return true;
 		}catch(Exception $e) {
+			Log::info('catchError',['message',$e->getMessage()."钱包直接减去，用户id为：".$this->id."日志结束"]);
 			DB::rollback();
 			return false;
 		}
@@ -107,13 +109,30 @@ class Wallet extends CommonModel{
 		return $result;
 	}
 
+	//减少锁定余额，增加余额，资金回滚
+	public function rollBackMoney($money){
+		//减少可用余额
+		$this->money_lock = $this->money_lock - $money;
+
+		if($this->money_lock < 0){
+			return false;
+		}
+
+		//增加锁定余额
+		$this->money = $this->money + $money;
+
+		$result = $this->save();
+
+		return $result;
+	}
+
 	//真实减少锁定余额
 	public function realReduceMoney($money,$type_id){
 		DB::beginTransaction();
 
 		try {
 			//减少锁定余额
-			$this->money_lock = $this->money_lock + $money;
+			$this->money_lock = $this->money_lock - $money;
 
 			if($this->money_lock < 0){
 				throw new Exception("钱包锁定余额不足");
@@ -132,8 +151,8 @@ class Wallet extends CommonModel{
 			DB::commit();
 			return true;
 		}catch(Exception $e) {
+			Log::info('catchError',['message',$e->getMessage()."钱包提现处理，用户id为：".$this->id."日志结束"]);
 			DB::rollback();
-
 			return false;
 		}
 	}
@@ -151,6 +170,12 @@ class Wallet extends CommonModel{
 				break;
 			case 4 :
 				$type = '互助奖励';
+				break;
+			case 5 :
+				$type = '等级平分奖励';
+				break;
+			case 6 :
+				$type = '充值';
 				break;
 			case -1 :
 				$type = '提现';
