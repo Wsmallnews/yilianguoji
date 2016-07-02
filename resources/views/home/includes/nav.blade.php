@@ -5,6 +5,8 @@
             .sidebar {margin-top:81px;}
         }
         .navbar-top-links .dropdown-messages {width:auto;}
+        .navbar-brand{height:80px;}
+        .web_name{line-height: 50px;font-size:28px;}
         </style>
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -15,6 +17,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="{{url('home/index')}}"><img src="{{ asset('/home/images/logo.jpg') }}" width="80" height="50" /></a>
+                <div class="navbar-brand web_name">{{$l_web['web_name']}}</div>
             </div>
             <!-- /.navbar-header -->
 
@@ -182,12 +185,15 @@
                             </ul>
                         </li>
 
-                        @if($l_user->superMan)
+                        @if($l_user->super_man)
                         <li>
                             <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/setting')}}">系统设置</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/adminUserAdd')}}">快速添加用户</a>
                                 </li>
                                 <li>
                                     <a href="{{url('home/walletUp')}}">用户钱包充值</a>

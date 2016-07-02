@@ -63,6 +63,7 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
         Route::get('cashAdminList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));
         Route::get('doApply', 'CashController@doApply');
         Route::get('adminUserNetwork/{keyword?}', 'UserController@adminUserNetwork');
+        Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));
     });
 });
 

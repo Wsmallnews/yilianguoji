@@ -36,7 +36,7 @@
                         <div class="panel-body" id="list_div">
                             <div id="search_div">
                                 <form class="form-inline" id="table_div_search">
-                                    @if($l_user->superMan && Route::currentRouteName() == 'cashAdmin')
+                                    @if($l_user->super_man && Route::currentRouteName() == 'cashAdmin')
                                     <div class="form-group">
                                         <label>用户名</label>
                                         <input type="text" class="form-control" name="keyword" placeholder="关键字">

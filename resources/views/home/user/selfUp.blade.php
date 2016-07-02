@@ -44,7 +44,7 @@
                         <a href="javascript:void(0)">
                             <div class="panel-footer" id="auto_up">
                                 <span class="pull-left">自助升级</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <span class="pull-right"><!--<i class="fa fa-arrow-circle-right"></i>-->我要升级</span>
                                 <div class="clearfix"></div>
                             </div>
                         </a>

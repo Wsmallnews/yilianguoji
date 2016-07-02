@@ -62,21 +62,49 @@ class UserController extends CommonController {
 	}
 
     public function add() {
-		// Session::put('createName',$this->createName());
-        return view('home.user.add');
+		$user = AuthUser::user();
+		if($user->super_man){
+			$keyword = Request::input('keyword');
+
+			if (!empty($keyword)) {
+				$user_list = User::where('name','like','%'.$keyword.'%')->get();
+			}else{
+				$user_list = User::get();
+			}
+		}else{
+			$user_list = array();
+		}
+
+		if(Request::ajax()){
+			$view = view('home.wallet.option',array('user_list' => $user_list));
+
+	        return Response::json(array('error'=>0,'data'=>array('html'=>$view->render())));
+		}else{
+			return view('home.user.add',array('user_list' => $user_list));
+		}
     }
 
     public function doAdd() {
 		$l_web = app('l_web');
+		$data = Request::input();
 
-		$user_info = AuthUser::user();
+		$user = AuthUser::user();
+
+		if(isset($data['user_id']) && $user->super_man){
+			$user_info = User::find($data['user_id']);
+			if(!$user_info){
+				return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('没有找到该用户');
+			}
+		}else{
+			$user_info = $user;
+		}
 
 		//每人最多邀请三个直属
 		if($user_info->children_num >= 3){
 			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('最多添加三个直属');
 		}
 
-		$data = Request::input();
+
 		$data['parent_id'] = Session::get('laravel_user_id');
 
         $validate = Validator::make($data,User::addFastRole(),User::addFastRoleMsg());
@@ -105,7 +133,8 @@ class UserController extends CommonController {
 			DB::commit();
 			return redirect('home/userList');
 		}catch(Exception $e) {
-			DB::rollback();
+			print_r($e->getMessage());
+			DB::rollback();exit;
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('添加失败');
 		}
     }

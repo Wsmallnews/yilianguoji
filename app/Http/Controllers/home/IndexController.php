@@ -37,6 +37,7 @@ class IndexController extends CommonController {
 	 */
 	public function __construct()
 	{
+
 		//$this->middleware('home');
 	}
 
@@ -90,7 +91,7 @@ class IndexController extends CommonController {
 		// 	echo "失败";
 		// 	print_r($e);
 		// }exit;
-
+		Artisan::call('queue:work', ['--tries' => '2']);
 	    return view('home.index.index');
 	}
 

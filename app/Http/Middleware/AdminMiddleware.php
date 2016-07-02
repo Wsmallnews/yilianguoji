@@ -23,7 +23,7 @@ class AdminMiddleware {
 	public function handle($request, Closure $next)
 	{
 		$user = AuthUser::user();
-	    if($user->superMan){
+	    if($user->super_man){
 			return $next($request);
 	    }else{
 			return redirect('home/index')->withErrors('对不起，您没有操作权限');

@@ -26,10 +26,31 @@
             <!-- /.row -->
             <div class="col-lg-12 row">
                 <form id="defaultForms" method="post" class="form-horizontal" action="{{url('home/userDoAdd')}}" >
+                    @if($l_user->super_man && Route::currentRouteName() == 'userAddAdmin')
                     <div class="form-group">
+                        <label class="col-lg-3 control-label">搜索推荐人</label>
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" name="keyword" placeholder="关键字">
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-primary" id="search_url">搜索</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">推荐人</label>
+                        <div class="col-lg-5">
+                            <select class="form-control" id="user_id" name="user_id">
+                                <option value="0">请选择用户...</option>
+                                @include('home.wallet.option')
+                            </select>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="form-group" id="name">
                         <label class="col-lg-3 control-label">用户名</label>
                         <div class="col-lg-5">
-                            <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" onblur="validate('no')"/>
+                            <input type="text" class="form-control" name="name" value="{{ old('name') }}" onblur="validate('no')"/>
                             将作为登录账号使用，添加后不可修改
                         </div>
                     </div>
@@ -77,11 +98,18 @@
         l.error("{{$errors->first()}}");
     @endif
 
+    list.init('#user_id');
+
+    $("#search_url").on('click',function(){
+        var keyword = $('input[name=keyword]').val();
+        list.search_list({keyword:keyword});
+    })
+
     function validate(type){
-        var name = $("#name").val();
+        var name = $("input[name=name]").val();
         if(name == ''){
             l.error('用户名不能为空');
-            $("#name").css({'border': '1px solid #FF0000'});
+            $("#name").addClass('has-error');
             return false;
         }
 
@@ -91,21 +119,18 @@
             type:'get',
             success:function(r){
                 if(r.error == 0){
-                    $("#name").css({'border': '1px solid #ccc'});
+                    $("#name").removeClass('has-error');
                     if(type == 'yes'){
                         $("#defaultForms").submit();
                     }
                     return true;
                 }
-                $("#name").css({'border': '1px solid #FF0000'});
+                $("#name").addClass('has-error');
                 l.error(r.info);
                 return false;
             }
         });
     }
-
-
-
     </script>
 
 </body>
