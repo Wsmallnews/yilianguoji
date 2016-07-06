@@ -74,29 +74,9 @@
         var keyword = $('input[name=keyword]').val();
         list.search_list({keyword:keyword});
     })
-
-    // $("#table_div").on('click','.active_btn',function(){
-    //     var id = $(this).parents('tr').attr('user_id');
-    //     if(confirm('确定要激活该用户吗？激活将消耗600 亿联币！')){
-    //         l.ajax({
-    //             url:"{{URL::to('home/userActive')}}",
-    //             data:{'id':id},
-    //             type:'get',
-    //             success:function(r){
-    //                 if(r.error == 0){
-    //                     l.success('操作成功');
-    //                     list.reload();
-    //                     return;
-    //                 }
-    //                 l.error('操作失败');
-    //                 return;
-    //             }
-    //         });
-    //     }
-    //     return false;
-    // });
-
     </script>
+
+    @include('home.includes.footer')
 
 </body>
 

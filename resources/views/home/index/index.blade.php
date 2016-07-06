@@ -203,11 +203,8 @@
     <!-- /#wrapper -->
 
     @include('home.includes.loadjs')
-    <script>
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-    </script>
+    
+    @include('home.includes.footer')
 </body>
 
 </html>

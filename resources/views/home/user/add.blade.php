@@ -94,10 +94,6 @@
 
     <script>
 
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-
     list.init('#user_id');
 
     $("#search_url").on('click',function(){
@@ -133,6 +129,7 @@
     }
     </script>
 
+    @include('home.includes.footer')
 </body>
 
 </html>

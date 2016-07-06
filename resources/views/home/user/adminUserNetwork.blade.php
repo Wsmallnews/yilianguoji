@@ -127,10 +127,6 @@
     @include('home.includes.loadjs')
     <script>
 
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-
     $("#search").on('click',function(){
         var keyword = $("input[name=keyword]").val();
         l.location("{{URL::to('home/adminUserNetwork')}}/0/"+keyword);
@@ -138,6 +134,7 @@
 
     </script>
 
+    @include('home.includes.footer')
 </body>
 
 </html>

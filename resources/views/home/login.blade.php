@@ -60,20 +60,8 @@
     </div>
 </div>
 @include('home.includes.loadjs')
-<script type="text/javascript">
-@if($errors->any())
-    l.error("{{$errors->first()}}");
-@endif
-// 	$('#login_form').on('click','.button_blue',function(){
-// 		zui.ajax({'url':"{{url('cms/login')}}",'data':"#login_form",
-// 			success:function(result){
-// 				alert(result);
-// 			}
-// 		});
-// 	});
-// });
 
-</script>
+@include('home.includes.footer')
 
 </body>
 </html>

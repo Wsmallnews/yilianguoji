@@ -47,13 +47,7 @@
 
     @include('home.includes.loadjs')
 
-    <script>
-
-    @if($errors->any())
-        alert("{{$errors->first()}}");
-    @endif
-    </script>
-
+    @include('home.includes.footer')
 </body>
 
 </html>

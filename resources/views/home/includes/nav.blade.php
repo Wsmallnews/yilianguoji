@@ -163,7 +163,7 @@
                                     <a href="{{url('home/userSelfUp')}}">自助升级</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/userNetwork')}}">网络管理</a>
+                                    <a href="{{url('home/userNetwork')}}">拓扑图管理</a>
                                 </li>
                             </ul>
                         </li>
@@ -193,7 +193,7 @@
 
                         @if($l_user->super_man)
                         <li>
-                            <a><i class="fa fa-cogs fa-fw"></i> 系统管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/setting')}}">系统设置</a>
@@ -211,7 +211,7 @@
                                     <a href="{{url('home/cashAdminList')}}">提现申请</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/adminUserNetwork')}}">网络管理</a>
+                                    <a href="{{url('home/adminUserNetwork')}}">拓扑图管理</a>
                                 </li>
                             </ul>
                         </li>

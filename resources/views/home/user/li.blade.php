@@ -2,8 +2,8 @@
                                     <thead>
                                         <tr>
                                             <th>用户id</th>
-                                            <th>所属用户</th>
                                             <th>用户名</th>
+                                            <th>所属用户</th>
                                             <th>用户等级</th>
                                             <th>邮箱</th>
                                             <th>手机号</th>
@@ -17,8 +17,8 @@
                                     @foreach($user_list as $list)
                                         <tr class="gradeC" user_id="{{$list->id}}">
                                             <td>{{$list->id}}</td>
-                                            <td>@if($list->parent){{$list->parent->name}}@else<span style="color:#fd6f0a">顶级会员</span>@endif</td>
                                             <td class="user_name">{{$list->name}}</td>
+                                            <td>@if($list->parent){{$list->parent->name}}@else<span style="color:#fd6f0a">顶级会员</span>@endif</td>
                                             <td>{{$list->rank}}</td>
                                             <td>{{$list->email}}</td>
                                             <td>{{$list->phone}}</td>

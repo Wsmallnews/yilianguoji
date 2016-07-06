@@ -150,7 +150,7 @@
         return false;
     })
     </script>
-
+    @include('home.includes.footer')
 </body>
 
 </html>

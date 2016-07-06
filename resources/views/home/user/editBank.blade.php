@@ -83,10 +83,6 @@
 
     <script>
 
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-
     $(".card_type").on('change',function(){
         var val = $(this).val()
         if(val == 2){   //银行卡
@@ -98,9 +94,9 @@
             $('.bank').hide();
         }
     })
-
-
     </script>
+
+    @include('home.includes.footer')
 
 </body>
 

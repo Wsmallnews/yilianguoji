@@ -63,13 +63,7 @@
     @include('home.includes.loadjs')
     <script src="{{ asset('/plus/bootstrap/dist/js/bootstrapValidator.min.js') }}"></script>
 
-    <script>
-
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-
-    </script>
+    @include('home.includes.footer')
 
 </body>
 

@@ -97,10 +97,6 @@
 
     <script>
 
-    @if($errors->any())
-        l.error("{{$errors->first()}}");
-    @endif
-
     $("#auto_up").on('click',function(){
         if(l.confirm('确定要升级吗？')){
             l.ajax({
@@ -118,9 +114,9 @@
             });
         }
     })
-
-
     </script>
+
+    @include('home.includes.footer')
 
 </body>
 
