@@ -55,6 +55,35 @@
     </div>
     <!-- /#wrapper -->
 
+    <div class="modal fade" id="myModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="reset_form">
+                        <div class="form-group" id="password">
+                            <label class="control-label" for="">新密码</label>
+                            <input type="password" class="form-control" name="password" value=""/>
+                        </div>
+
+                        <div class="form-group" id="conf_password">
+                            <label class="control-label" for="">确认密码</label>
+                            <input type="password" class="form-control" name="conf_password" value=""/>
+                        </div>
+                        <input type="hidden" name="id" value="0" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirm">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     @include('home.includes.loadjs')
     <script type="text/javascript" >
 
@@ -80,6 +109,52 @@
         }
         return false;
     });
+
+
+    $('#myModal').modal({
+        show:false
+    });
+
+    $("#table_div").on('click',".reset_user_btn",function(){
+        var id = $(this).parents('tr').attr('user_id');
+        var user_name = $(this).parents('tr').find('.user_name').html();
+
+        var msg = '正在为“'+user_name+'”重置密码';
+
+        $('#title').html(msg);
+        $('#reset_form').find('input[name=id]').val(id);
+        $('#myModal').modal('show');
+    });
+
+    $("#confirm").on('click',function(){
+        var data = l.parseFormJson("#reset_form");
+
+        if(data.password == ''){
+            $("#password").addClass('has-error');
+            return false;
+        }else if(data.password != data.conf_password){
+            $("#conf_password").addClass('has-error');
+            return false;
+        }
+
+        l.ajax({
+            url:"{{URL::to('home/resetPass')}}",
+            data:data,
+            type:'get',
+            success:function(r){
+                $('#myModal').modal('hide');
+                if(r.error == 0){
+                    l.success('重置成功');
+                    list.reload();
+                    return;
+                }
+                l.error(r.info);
+                return;
+            }
+        });
+
+        return false;
+    })
 
     </script>
 

@@ -10,20 +10,22 @@
                                             <th>注册时间</th>
                                             <th>激活状态</th>
                                             <th>激活时间</th>
+                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')<th>操作</th>@endif
                                         </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($user_list as $list)
                                         <tr class="gradeC" user_id="{{$list->id}}">
                                             <td>{{$list->id}}</td>
-                                            <td>{{$list->parent->name}}</td>
-                                            <td>{{$list->name}}</td>
+                                            <td>@if($list->parent){{$list->parent->name}}@else<span style="color:#fd6f0a">顶级会员</span>@endif</td>
+                                            <td class="user_name">{{$list->name}}</td>
                                             <td>{{$list->rank}}</td>
                                             <td>{{$list->email}}</td>
                                             <td>{{$list->phone}}</td>
                                             <td>{{$list->created_at}}</td>
-                                            <td>@if($list->status)已激活 @else 未激活 <button type="button" class="active_btn" >激活</button>@endif</td>
+                                            <td>@if($list->status)已激活 @else 未激活 <button type="button" class="btn btn-primary active_btn" >激活</button>@endif</td>
                                             <td>{{$list->invi_at}}</td>
+                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')<td><a href="{{URL::to('home/userEdit',array('id' => $list->id))}}" class="btn btn-info edit_user_btn" >修改资料</a>  <button type="button" class="btn btn-warning reset_user_btn" >重置密码</button></td>@endif
                                         </tr>
                                     @endforeach
                                     </tbody>

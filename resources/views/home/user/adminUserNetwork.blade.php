@@ -51,10 +51,10 @@
                                     <div class="middle_div">
                                         <div class="panel panel-primary">
                                             <div class="panel-heading">
-                                                {{$user['name']}}
+                                                {{$user->name}}
                                             </div>
                                             <div class="panel-body">
-                                                <p>等级：<span>{{$user['rank']}}</span></p>
+                                                <p>等级：<span>{{$user->rank}}</span></p>
                                             </div>
                                             <div class="panel-footer">
                                                 <!-- <a href="javascript:void(0)">查看详细</a> -->
@@ -71,7 +71,45 @@
                                 </div>
                                 @endif
                                 <div class="row">
-                                    {!!$str!!}
+                                    @foreach($son_list as $list)
+                                    <div class="col-lg-4 col-xs-4">
+                                        <div class="middle_son">
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading">
+                                                    {{$list['name']}}
+                                                </div>
+                                                <div class="panel-body">
+                                                    <p>等级：<span>{{$list['rank']}}</span></p>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a href="{{URL::to('home/adminUserNetwork',array('id'=>$list['id']))}}">查看网络图</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="middle">
+                                            <img src="{{ asset('/home/images/network.png') }}" width="100%" height="50" />
+                                        </div>
+                                        <div class="row">
+                                            @foreach($list['grandson'] as $li)
+                                            <div class="col-lg-4 col-xs-4">
+                                                <div class="middle_son">
+                                                    <div class="panel panel-primary">
+                                                        <div class="panel-heading">
+                                                            {{$li['name']}}
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <p>等级：<span>{{$li['rank']}}</span></p>
+                                                        </div>
+                                                        <div class="panel-footer">
+                                                            <a href="{{URL::to('home/adminUserNetwork',array('id'=>$li['id']))}}">查看网络图</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -95,7 +133,7 @@
 
     $("#search").on('click',function(){
         var keyword = $("input[name=keyword]").val();
-        l.location("{{URL::to('home/adminUserNetwork')}}/"+keyword);
+        l.location("{{URL::to('home/adminUserNetwork')}}/0/"+keyword);
     })
 
     </script>

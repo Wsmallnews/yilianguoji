@@ -31,8 +31,10 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
     Route::get('userActive', 'UserController@doUserActive');    //激活
     Route::get('userNameUnique', 'UserController@nameUnique');  //检测用户名是否重复
 
-    Route::get('userEdit', 'UserController@edit');              //修改用户信息
+    Route::get('userEdit/{id?}', 'UserController@edit');              //修改用户信息
     Route::post('userDoEdit', 'UserController@doEdit');
+    Route::get('userEditBank', 'UserController@editBank');      //修改密码
+    Route::post('userDoEditBank', 'UserController@doEditBank');
     Route::get('userEditPass', 'UserController@editPass');      //修改密码
     Route::post('userDoEditPass', 'UserController@doEditPass');
     Route::get('userSelfUp', 'UserController@selfUp');          //会员自助升级
@@ -52,18 +54,20 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
     Route::get('shareMoney', 'UserController@shareMoney');
     Route::get('rankShareMoney', 'UserController@rankShareMoney');
 
-
     //超级管理员分组
     Route::group(['middleware' => 'admin'],function(){
         //系统设置
-        Route::get('setting', 'SettingController@setting');
-        Route::post('settingDoEdit', 'SettingController@doEdit');
-        Route::get('walletUp', 'WalletController@walletUp');
-        Route::post('doWalletUp', 'WalletController@doWalletUp');
-        Route::get('cashAdminList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));
-        Route::get('doApply', 'CashController@doApply');
-        Route::get('adminUserNetwork/{keyword?}', 'UserController@adminUserNetwork');
-        Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));
+        Route::get('setting', 'SettingController@setting');         //设置
+        Route::post('settingDoEdit', 'SettingController@doEdit');       //进行设置
+        Route::get('walletUp', 'WalletController@walletUp');        //用户提现列表
+        Route::post('doWalletUp', 'WalletController@doWalletUp');           //处理钱包提现
+        Route::get('cashAdminList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));      //管理员提现列表
+        Route::get('doApply', 'CashController@doApply');        //处理提现
+        Route::get('adminUserList', array('as' => 'userListAdmin','uses' => 'UserController@lists'));  //管理员用户列表
+        Route::get('adminUserNetwork/{id?}/{keyword?}', 'UserController@adminUserNetwork');           //管理员网络图
+        Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));       //管理员添加用户
+        Route::get('resetPass', 'UserController@resetPass');       //管理员重置密码
+
     });
 });
 

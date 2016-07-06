@@ -16,6 +16,7 @@ use \Exception;
 use Queue;
 use App\Commands\SeePrize;
 use Artisan;
+use App\Article;
 
 class IndexController extends CommonController {
 
@@ -91,8 +92,12 @@ class IndexController extends CommonController {
 		// 	echo "失败";
 		// 	print_r($e);
 		// }exit;
+		$user = AuthUser::user();
+
+		$article = Article::orderBy('is_top','desc')->orderBy('id','desc')->paginate(10);
+
 		Artisan::call('queue:work', ['--tries' => '2']);
-	    return view('home.index.index');
+	    return view('home.index.index',array('user' => $user, 'article' => $article));
 	}
 
 

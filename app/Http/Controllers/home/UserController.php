@@ -18,6 +18,8 @@ use \Exception;
 use App\CronLog;
 use Hp;
 use Log;
+use Route;
+use App\Bank;
 
 class UserController extends CommonController {
 
@@ -38,17 +40,17 @@ class UserController extends CommonController {
 	 */
 	public function lists() {
 	    $pageRow = Request::input('rows',15);
-		$pageRow = Request::input('rows',15);
 
 	    $user_id = Session::get('laravel_user_id');
+		$user = AuthUser::user();
 
-	    $where = array();
+		if($user->super_man && Route::currentRouteName() == 'userListAdmin'){
+			$where = array();
+		}else{
+			$where['parent_id'] = $user_id;
+		}
 
-        if(!empty($user_id)){
-            $where['parent_id'] = $user_id;
-        }
-
-        $user_list = User::where($where)->with('parent')->paginate($pageRow);
+        $user_list = User::with('parent')->paginate($pageRow);
 
 	    if(Request::ajax()){
 
@@ -183,8 +185,12 @@ class UserController extends CommonController {
 	}
 
 
-	public function edit(){
+	public function edit($id = 0){
 		$user = AuthUser::user();
+
+		if($id && $user->super_man){
+			$user = User::find($id);
+		}
 
 		return view('home.user.edit',array('user' => $user));
 	}
@@ -192,13 +198,36 @@ class UserController extends CommonController {
 	public function doEdit(){
 		$data = Request::input();
 
-		$validate = Validator::make($data,User::editRole(Session::get('laravel_user_id')),User::editRoleMsg());
+		$validate = Validator::make($data,User::editRole($data['id']),User::editRoleMsg());
 
         if($validate->fails()){
             return Redirect::back()->withInput($data)->withErrors($validate->errors());
         }
 
-		//过滤model ，一个一个赋值然后修改，只能修改自己
+		//过滤model
+		$user = AuthUser::user();
+
+		if($data['id'] != $user->id && $user->super_man){
+			$user = User::find($data['id']);
+		}
+
+		$user->fill($data);
+
+        $user->save();
+
+		return redirect('home/index');
+	}
+
+	public function editBank(){
+		$user = AuthUser::user();
+
+		$bank = Bank::del()->get();
+		return view('home.user.editBank',array('user' => $user,'bank' => $bank));
+	}
+
+	public function doEditBank(){
+		$data = Request::input();
+		//只能修改自己
 		$user = AuthUser::user();
 		$user->fill($data);
 
@@ -229,6 +258,26 @@ class UserController extends CommonController {
 		$user->save();
 
 		return redirect('home/index');
+	}
+
+	public function resetPass(){
+		$data = Request::input();
+
+		try{
+			if($data['password'] != $data['conf_password']){
+				throw new Exception("两次输入密码不一致");
+			}
+
+			$user = User::findOrFail($data['id']);
+
+			$user->password = bcrypt($data['password']);
+			$user->save();
+
+			return Response::json(array('error'=>0,'info' => '重置成功'));
+		}catch(Exception $e){
+			return Response::json(array('error'=>1,'info' => '重置失败'));
+		}
+		// return redirect()-back()->with('message',"重置成功");
 	}
 
 	public function selfUp(){
@@ -264,7 +313,11 @@ class UserController extends CommonController {
 			$level_parent_id = $user->getParents($rank);
 			$walletP = Wallet::findorFail($level_parent_id);
 
-			$end_need_money = app('l_web')->repeat_scale * $need_money;
+			if(app('l_web')->is_repeat){	//重消开关
+				$end_need_money = app('l_web')->repeat_scale * $need_money;
+			}else{
+				$end_need_money = $need_money;
+			}
 			$result = $walletP->increaseMoney($end_need_money,4);
 			if(!$result){
 				//钱包执行失败，给用户互助奖励失败
@@ -302,17 +355,38 @@ class UserController extends CommonController {
 		return view('home.user.userNetwork',array('user' => $user,'son_list' => $son_list));
 	}
 
-	public function adminUserNetwork($keyword = ''){
-		if(!empty($keyword)){
-			$user = User::where('name','like','%'.$keyword.'%')->first()->toArray();
+	public function adminUserNetwork($id = 0,$keyword = ''){
+		// var_dump($keyword);
+		// var_dump($id);exit;
+		if($id){
+			$user = User::find($id);
+		}else if(!empty($keyword)){
+			$user = User::where('name','like','%'.$keyword.'%')->first();
 		}else{
-			$user = AuthUser::user()->toArray();
+			$user = AuthUser::user();
 		}
+
 		$user_id = $user['id'];
 
-		$str = $this->getUserNet($user_id);
+		$son_list = User::where('parent_id',$user_id)->orderBy('id', 'asc')->get()->toArray();
 
-		return view('home.user.adminUserNetwork',array('user' => $user,'str' => $str,'keyword' => $keyword));
+		foreach($son_list as $key => $value){
+			$grandson_list = User::where('parent_id',$value['id'])->orderBy('id', 'asc')->get()->toArray();
+			$son_list[$key]['grandson'] = $grandson_list;
+		}
+
+		return view('home.user.adminUserNetwork',array('user' => $user,'son_list' => $son_list,'keyword' => $keyword));
+
+		// if(!empty($keyword)){
+		// 	$user = User::where('name','like','%'.$keyword.'%')->first();
+		// }else{
+		// 	$user = AuthUser::user();
+		// }
+		// $user_id = $user['id'];
+		//
+		// $str = $this->getUserNet($user_id);
+		//
+		// return view('home.user.adminUserNetwork',array('user' => $user,'str' => $str,'keyword' => $keyword));
 	}
 
 	//获取用户递归列表

@@ -7,7 +7,8 @@ class Setting extends CommonModel{
 
 	protected $Guarded  = ['*'];	//不允许批量赋值
 
-	protected $fillable = array('web_name', 'active_money', 'direct_prize', 'see_prize', 'repeat_scale');
+	protected $fillable = array('web_name', 'active_money', 'direct_prize', 'see_prize', 'is_repeat', 'repeat_scale',
+								'is_charge', 'charge_scale', 'low_share_money', 'share_money_scale', 'get_money_scale');
 
 	public $timestamps = false;
 

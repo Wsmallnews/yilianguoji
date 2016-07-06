@@ -26,6 +26,7 @@
             <!-- /.row -->
             <div class="col-lg-12 row">
                 <form id="defaultForms" method="post" class="form-horizontal" action="{{url('home/userDoEdit')}}" >
+                    <input type="hidden" class="form-control" name="id" value="@if($user->exists){{{$user->id}}}@else{{{ old('id') }}}@endif" />
                     <div class="form-group">
                         <label class="col-lg-3 control-label">邮箱</label>
                         <div class="col-lg-5">
@@ -52,24 +53,6 @@
                         <label class="col-lg-3 control-label">身份证号</label>
                         <div class="col-lg-5">
                             <input type="text" class="form-control" name="cert_no" value="@if($user->exists){{{$user->cert_no}}}@else{{{ old('cert_no') }}}@endif" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">账户类型</label>
-                        <div class="col-lg-5">
-                            <select name="card_type" class="form-control">
-                                <option value="3" @if(($user->exists && $user->card_type == 3) || old('card_type') == 3) selected @endif>微信号</option>
-                                <option value="1" @if(($user->exists && $user->card_type == 1) || old('card_type') == 1) selected @endif>支付宝</option>
-                                <option value="2" @if(($user->exists && $user->card_type == 2) || old('card_type') == 2) selected @endif>银行卡</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label">结款账户</label>
-                        <div class="col-lg-5">
-                            <input type="text" class="form-control" name="card_no" value="@if($user->exists){{{$user->card_no}}}@else{{{ old('card_no') }}}@endif" />
                         </div>
                     </div>
 

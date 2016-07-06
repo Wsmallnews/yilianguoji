@@ -33,10 +33,16 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function handle()
 	{
-		//见点奖
-		$see_prize = app('l_web')->see_prize * app('l_web')->repeat_scale;
-		//直推奖
-		$direct_prize = app('l_web')->direct_prize * app('l_web')->repeat_scale;
+
+		if(app('l_web')->is_repeat){	//重消开关
+			//见点奖
+			$see_prize = app('l_web')->see_prize * app('l_web')->repeat_scale;
+			//直推奖
+			$direct_prize = app('l_web')->direct_prize * app('l_web')->repeat_scale;
+		}else{
+			$see_prize = app('l_web')->see_prize;
+			$direct_prize = app('l_web')->direct_prize;
+		}
 
 		$user = new User();
 

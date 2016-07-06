@@ -139,7 +139,10 @@
                             <!-- /input-group -->
                         <!-- </li> -->
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 会员管理<span class="fa arrow"></a>
+                            <a href="{{url('home/index')}}"><i class="fa fa-home fa-fw"></i> 首页<span class="fa arrow"></a>
+                        </li>
+                        <li>
+                            <a><i class="fa fa-user fa-fw"></i> 会员管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/userList')}}">会员列表</a>
@@ -151,19 +154,22 @@
                                     <a href="{{url('home/userEdit')}}">完善个人资料</a>
                                 </li>
                                 <li>
+                                    <a href="{{url('home/userEditBank')}}">结款账号</a>
+                                </li>
+                                <li>
                                     <a href="{{url('home/userEditPass')}}">修改密码</a>
                                 </li>
                                 <li>
                                     <a href="{{url('home/userSelfUp')}}">自助升级</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/userNetwork')}}">拓扑图管理</a>
+                                    <a href="{{url('home/userNetwork')}}">网络管理</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 提现管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-credit-card fa-fw"></i> 提现管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/cashList')}}">提现列表</a>
@@ -174,7 +180,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 钱包<span class="fa arrow"></a>
+                            <a><i class="fa fa-money fa-fw"></i> 钱包<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/myWallet')}}">我的钱包</a>
@@ -187,10 +193,13 @@
 
                         @if($l_user->super_man)
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-cogs fa-fw"></i> 系统管理<span class="fa arrow"></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/setting')}}">系统设置</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/adminUserList')}}">用户列表</a>
                                 </li>
                                 <li>
                                     <a href="{{url('home/adminUserAdd')}}">快速添加用户</a>
@@ -202,7 +211,7 @@
                                     <a href="{{url('home/cashAdminList')}}">提现申请</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/adminUserNetwork')}}">拓扑图管理</a>
+                                    <a href="{{url('home/adminUserNetwork')}}">网络管理</a>
                                 </li>
                             </ul>
                         </li>
