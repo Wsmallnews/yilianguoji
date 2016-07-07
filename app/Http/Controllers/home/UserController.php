@@ -215,7 +215,7 @@ class UserController extends CommonController {
 
         $user->save();
 
-		return redirect('home/index');
+		return redirect('home/index')->withSuccess('资料修改成功');
 	}
 
 	public function editBank(){
@@ -233,7 +233,7 @@ class UserController extends CommonController {
 
         $user->save();
 
-		return redirect('home/index');
+		return redirect('home/index')->withSuccess('银行卡设置成功');
 	}
 
 	public function editPass(){
@@ -257,7 +257,7 @@ class UserController extends CommonController {
 
 		$user->save();
 
-		return redirect('home/index');
+		return redirect('home/index')->withSuccess('密码修改成功');
 	}
 
 	public function resetPass(){

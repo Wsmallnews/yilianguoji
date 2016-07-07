@@ -63,7 +63,7 @@ class WalletController extends CommonController {
 			if(!$result){
 				throw new Exception("充值-钱包编辑失败，用户id为：".$user_id."日志结束");
 			}
-			return redirect('home/index');
+			return redirect('home/index')->withSuccess('充值成功');
 		}catch(Exception $e){
 			Log::info('catchError',['message',$e->getMessage()]);
 

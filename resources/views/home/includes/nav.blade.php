@@ -7,6 +7,8 @@
         .navbar-top-links .dropdown-messages {width:auto;}
         .navbar-brand{height:80px;}
         .web_name{line-height: 50px;font-size:28px;}
+        #title i {font-size: 25px;}
+        .modal-title i {margin-right: 5px;}
         </style>
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -223,3 +225,37 @@
             </div>
             <!-- /.navbar-static-side -->
         </nav>
+
+        <div class="modal fade" id="error_msg_modal" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog modal-sm" role="alert">
+                <div class="modal-content alert-danger">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title"><i class="fa fa-warning"></i>提示</h3>
+                    </div>
+                    <div class="modal-body" id="error_msg_body">
+                        <h4 class="error_msg"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="success_msg_modal" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog modal-sm" role="alert">
+                <div class="modal-content alert-success">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title"><i class="fa fa-check-circle"></i>提示</h3>
+                    </div>
+                    <div class="modal-body" id="success_msg_body">
+                        <h4 class="success_msg"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->

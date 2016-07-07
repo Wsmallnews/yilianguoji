@@ -34,10 +34,24 @@ var l = {
 		return o;
 	},
 	error : function(msg){
-		alert(msg);
+		var id = "#error_msg_modal";
+		$(id).find('.error_msg').html(msg);
+
+		l.showModal(id,{
+			show:true,
+	        backdrop: 'static',
+	        keyboard: false
+		});
 	},
 	success : function(msg){
-		alert(msg);
+		var id = "#success_msg_modal";
+		$(id).find('.success_msg').html(msg);
+
+		l.showModal(id,{
+			show:true,
+	        backdrop: true,
+	        keyboard: true
+		});
 	},
 	confirm : function(msg){
 		if(confirm(msg)){
@@ -45,6 +59,17 @@ var l = {
 		}else{
 			return false;
 		}
+	},
+	showModal : function(id,params){
+		var defaults = {
+			show:false,
+			backdrop: true,	//‘static’指定静态背景不点击关闭模态（点击背景不关闭）
+			keyboard: true	//点击esc 关闭
+		}
+
+		$.extend(defaults, params);
+
+		$(id).modal(defaults);
 	},
 	location : function(url){
 		if(url != undefined){

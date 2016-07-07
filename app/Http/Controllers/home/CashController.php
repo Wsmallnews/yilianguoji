@@ -88,7 +88,7 @@ class CashController extends CommonController {
 			$cash->save();
 
 			DB::commit();
-	        return redirect()->intended('home/cashList');
+	        return redirect()->intended('home/cashList')->withSuccess('提现申请成功');
 
 		}catch(Exception $e){
 			DB::rollback();

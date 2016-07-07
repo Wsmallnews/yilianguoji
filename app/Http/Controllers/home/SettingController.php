@@ -49,6 +49,6 @@ class SettingController extends CommonController {
 
         $setting->save();
 
-		return redirect('home/index');
+		return redirect('home/index')->withSuccess('设置成功');
     }
 }
