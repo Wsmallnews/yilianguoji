@@ -113,6 +113,26 @@ class User extends CommonModel{
         return $this->belongsTo('App\User','parent_id');
     }
 
+    //载入银行名称
+    public function bank(){
+        return $this->belongsTo('App\Bank','card_bank');
+    }
+
+    //载入父级信息
+    public function getCardTypeNameAttribute()
+    {
+        $card_type_name = '';
+        if($this->card_type == 1){
+            $card_type_name = "支付宝";
+        }else if($this->card_type == 2){
+            $card_type_name = "银行卡";
+        }else if($this->card_type == 3){
+            $card_type_name = "微信号";
+        }
+
+        return $card_type_name;
+    }
+
 
     //获取指定上几级用户的id
     public function getParents($level){

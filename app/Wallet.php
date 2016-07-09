@@ -186,6 +186,9 @@ class Wallet extends CommonModel{
 			case -3 :
 				$type = '自助升级';
 				break;
+			case -4 :
+				$type = '提现手续费';
+				break;
 			default :
 				$type = '未知';
 				break;

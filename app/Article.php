@@ -12,5 +12,5 @@ class Article extends CommonModel{
 		return $this->where('is_top',1);
 	}
 
-	
+
 }

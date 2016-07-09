@@ -99,11 +99,12 @@
 
     @include('home.includes.loadjs')
     <script type="text/javascript" >
+    list.init();
+
+    @if($l_user->super_man && Route::currentRouteName() == 'cashAdmin')
     $('#myModal').modal({
         show:false
     });
-
-    list.init();
 
     $("#table_div").on('click',".oper_btn",function(){
         var id = $(this).parents('tr').attr('cash_id');
@@ -149,6 +150,7 @@
 
         return false;
     })
+    @endif
     </script>
     @include('home.includes.footer')
 </body>

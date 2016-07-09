@@ -3,7 +3,12 @@
                                         <tr>
                                             <th>id</th>
                                             <th>所属用户</th>
-                                            <th>金额</th>
+                                            <th>提现金额</th>
+                                            <th>提现手续费</th>
+                                            <th>账户类型</th>
+                                            <th>开户银行</th>
+                                            <th>账户姓名</th>
+                                            <th>结款账户</th>
                                             <th>状态</th>
                                             <th>驳回原因</th>
                                             <th>提现时间</th>
@@ -17,6 +22,11 @@
                                             <td>{{$list->id}}</td>
                                             <td>{{$list->user->name}}</td>
                                             <td>{{$list->money}}</td>
+                                            <td>{{$list->charge_money}}</td>
+                                            <td>{{$list->card_type_name}}</td>
+                                            <td>@if($list->card_type == 2){{$list['bank']['bank_name']}}@else非银行账户@endif</td>
+                                            <td>{{$list->card_name}}</td>
+                                            <td>{{$list->card_no}}</td>
                                             <td>@if($list->status == 0)未处理 @elseif($list->status == 1) 提现成功 @elseif($list->status == -1) 提现驳回 @endif</td>
                                             <td>{{$list->fail_msg}}</td>
                                             <td>{{$list->created_at}}</td>

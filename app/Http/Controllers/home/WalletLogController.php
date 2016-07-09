@@ -37,7 +37,7 @@ class WalletLogController extends CommonController {
 
         $where['u_id'] = $user_id;
 
-        $wallet_list = WalletLog::where($where)->with('user')->paginate($pageRow);
+        $wallet_list = WalletLog::where($where)->with('user')->orderBy('id','desc')->paginate($pageRow);
 
 	    if(Request::ajax()){
 

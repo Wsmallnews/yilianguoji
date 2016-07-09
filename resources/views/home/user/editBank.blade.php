@@ -51,7 +51,6 @@
                     <div class="form-group bank alipay" @if(($user->exists && $user->card_type == 3) || old('card_type') == 3)style="display:none"@endif>
                         <label class="col-lg-3 control-label">账号名称</label>
                         <div class="col-lg-5">
-                            {{$user->card_name}}--------{{ old('card_name') }}
                             <input type="text" class="form-control" name="card_name" value="@if($user->exists){{{$user->card_name}}}@else{{{ old('card_name') }}}@endif" />
                             根据上面选择的账户类型，填写相应的账号名
                         </div>
