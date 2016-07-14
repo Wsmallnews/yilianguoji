@@ -1,11 +1,11 @@
 <?php
 namespace App;
 
-class WalletLog extends CommonModel{
+class RechargeLog extends CommonModel{
 
 	protected $Guarded  = ['*'];	//不允许批量赋值
 
-	protected $fillable = array('u_id','type_id','type','money','status');
+	protected $fillable = array('u_id', 'money');
 
 	//关联用户
 	public function users(){

@@ -28,7 +28,7 @@ class UserController extends CommonController {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function _initialize()
 	{
 		//$this->middleware('home');
 	}
@@ -50,7 +50,7 @@ class UserController extends CommonController {
 			$where['parent_id'] = $user_id;
 		}
 
-        $user_list = User::with('parent')->paginate($pageRow);
+        $user_list = User::where($where)->with('parent')->paginate($pageRow);
 
 	    if(Request::ajax()){
 
@@ -135,8 +135,8 @@ class UserController extends CommonController {
 			DB::commit();
 			return redirect('home/userList');
 		}catch(Exception $e) {
-			print_r($e->getMessage());
-			DB::rollback();exit;
+			// print_r($e->getMessage());
+			DB::rollback();
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('添加失败');
 		}
     }
@@ -310,8 +310,20 @@ class UserController extends CommonController {
 			}
 
 			// 自助升级，给上级用户 增加亿联币
-			$level_parent_id = $user->getParents($rank);
-			$walletP = Wallet::findorFail($level_parent_id);
+			$level_parent = $user->getParents($rank);
+			if($level_parent){
+				if($level_parent->rank >= $rank){
+
+					$parents_id = $level_parent->id;
+				}else{
+					$parents_id = 0;
+				}
+			}else{
+				//没有找到上级，就把钱返给系统钱包
+				$parents_id = 0;
+			}
+
+			$walletP = Wallet::findorFail($parents_id);
 
 			if(app('l_web')->is_repeat){	//重消开关
 				$end_need_money = app('l_web')->repeat_scale * $need_money;

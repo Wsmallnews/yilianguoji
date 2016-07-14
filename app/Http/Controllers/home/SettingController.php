@@ -16,7 +16,7 @@ class SettingController extends CommonController {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function _initialize()
 	{
 		//$this->middleware('home');
 		//$this->middleware('admin');

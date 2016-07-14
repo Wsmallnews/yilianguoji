@@ -50,23 +50,38 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
     Route::get('myWallet', 'WalletController@wallet');
     Route::get('walletLog', 'WalletLogController@lists');
 
+    //系统公告
+    Route::get('articleView/{id?}', 'ArticleController@view');
+    Route::get('articleList', 'ArticleController@lists');
+
     //公司分红
     Route::get('shareMoney', 'UserController@shareMoney');
     Route::get('rankShareMoney', 'UserController@rankShareMoney');
 
     //超级管理员分组
-    Route::group(['middleware' => 'admin'],function(){
+    Route::group(['middleware' => ['admin', 'after']],function(){
         //系统设置
         Route::get('setting', 'SettingController@setting');         //设置
         Route::post('settingDoEdit', 'SettingController@doEdit');       //进行设置
         Route::get('walletUp', 'WalletController@walletUp');        //用户提现列表
         Route::post('doWalletUp', 'WalletController@doWalletUp');           //处理钱包提现
-        Route::get('cashAdminList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));      //管理员提现列表
+        Route::get('adminCashList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));      //管理员提现列表
         Route::get('doApply', 'CashController@doApply');        //处理提现
         Route::get('adminUserList', array('as' => 'userListAdmin','uses' => 'UserController@lists'));  //管理员用户列表
         Route::get('adminUserNetwork/{id?}/{keyword?}', 'UserController@adminUserNetwork');           //管理员网络图
         Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));       //管理员添加用户
         Route::get('resetPass', 'UserController@resetPass');       //管理员重置密码
+
+        Route::get('articleAdd', 'ArticleController@add');
+        Route::get('articleEdit/{id?}', 'ArticleController@Edit');
+        Route::post('articleDoAddEdit', 'ArticleController@doAddEdit');
+        Route::get('adminArticleList', array('as' => 'articleListAdmin','uses' => 'ArticleController@adminLists'));       //管理员添加文章
+
+
+        Route::get('adminWalletList', 'WalletController@adminLists');   //钱包列表
+        Route::get('adminWalletLogList/{id?}', 'WalletLogController@adminLists');   //钱包记录列表
+
+        Route::get('adminRechargeLogList/{id?}', 'RechargeLogController@adminLists');   //充值记录
 
     });
 });

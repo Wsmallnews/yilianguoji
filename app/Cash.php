@@ -23,7 +23,7 @@ class Cash extends CommonModel{
 
 
 	//关联用户
-	public function user(){
+	public function users(){
         return $this->belongsTo('App\User','u_id');
 	}
 

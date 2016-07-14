@@ -15,8 +15,11 @@ use DB;
 use \Exception;
 use Queue;
 use App\Commands\SeePrize;
+use App\Commands\ShareMoney;
+use Bus;
 use Artisan;
 use App\Article;
+use App\Cash;
 
 class IndexController extends CommonController {
 
@@ -36,7 +39,7 @@ class IndexController extends CommonController {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function _initialize()
 	{
 
 		//$this->middleware('home');
@@ -49,6 +52,11 @@ class IndexController extends CommonController {
 	 */
 	public function index()
 	{
+		// $cash = new Cash();
+		// $users = AuthUser::user()->cashs()->first();
+		//
+		// print_r($users);
+		// exit;
 		// try{
 		// 	$user = Wallet::findOrFail(123);
 		// 	if($user->money != 0){
@@ -97,6 +105,16 @@ class IndexController extends CommonController {
 		$article = Article::orderBy('is_top','desc')->orderBy('id','desc')->paginate(10);
 
 		Artisan::call('queue:work', ['--tries' => '2']);
+
+		//平分奖励
+		Bus::dispatch(
+	        new ShareMoney(1)
+	    );
+		//等级平分奖励
+		Bus::dispatch(
+	        new ShareMoney(2)
+	    );
+
 	    return view('home.index.index',array('user' => $user, 'article' => $article));
 	}
 

@@ -14,6 +14,9 @@ class EventServiceProvider extends ServiceProvider {
 		'event.name' => [
 			'EventListener',
 		],
+		'App\Events\Log' => [
+			'App\Handlers\Events\AdminLog',
+		],
 	];
 
 	/**

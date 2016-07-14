@@ -30,6 +30,8 @@ class Kernel extends HttpKernel {
 
 	    //管理员中间件
 	    'admin' => 'App\Http\Middleware\AdminMiddleware',
+		//管理员日志中间件
+	    'after' => 'App\Http\Middleware\AfterMiddleware',
 
 	    //前台登录管理中间件
 	    'home' => 'App\Http\Middleware\HomeMiddleware',

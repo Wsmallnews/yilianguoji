@@ -133,6 +133,11 @@ class User extends CommonModel{
         return $card_type_name;
     }
 
+    //获取提现记录
+    public function cashs(){
+        return $this->hasMany('App\Cash','u_id');
+    }
+
 
     //获取指定上几级用户的id
     public function getParents($level){
@@ -151,11 +156,8 @@ class User extends CommonModel{
 
         //验证u_id，因为for循环之后没有确定这个u_id 对应的用户是否被删除
         $result = $this->find($u_id);
-        if(!$result){   //如果没有查到，设置为0
-            $u_id = 0;
-        }
 
-        return $u_id;
+        return $result;
     }
 
 

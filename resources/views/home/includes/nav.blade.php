@@ -141,10 +141,10 @@
                             <!-- /input-group -->
                         <!-- </li> -->
                         <li>
-                            <a href="{{url('home/index')}}"><i class="fa fa-home fa-fw"></i> 首页<span class="fa arrow"></a>
+                            <a href="{{url('home/index')}}"><i class="fa fa-home fa-fw"></i> 首页<span class="fa arrow"></span></a>
                         </li>
                         <li>
-                            <a><i class="fa fa-user fa-fw"></i> 会员管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-user fa-fw"></i> 会员管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/userList')}}">会员列表</a>
@@ -171,7 +171,7 @@
                         </li>
 
                         <li>
-                            <a><i class="fa fa-credit-card fa-fw"></i> 提现管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-credit-card fa-fw"></i> 提现管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/cashList')}}">提现列表</a>
@@ -182,7 +182,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a><i class="fa fa-money fa-fw"></i> 钱包<span class="fa arrow"></a>
+                            <a><i class="fa fa-money fa-fw"></i> 钱包<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/myWallet')}}">我的钱包</a>
@@ -193,9 +193,13 @@
                             </ul>
                         </li>
 
+                        <li>
+                            <a href="{{url('home/articleList')}}"><i class="fa fa-bell fa-fw"></i> 站内资讯<span class="fa arrow"></span></a>
+                        </li>
+
                         @if($l_user->super_man)
                         <li>
-                            <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></a>
+                            <a><i class="fa fa-dashboard fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="{{url('home/setting')}}">系统设置</a>
@@ -210,15 +214,31 @@
                                     <a href="{{url('home/walletUp')}}">用户钱包充值</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/cashAdminList')}}">提现申请</a>
+                                    <a href="{{url('home/adminCashList')}}">提现申请</a>
                                 </li>
                                 <li>
                                     <a href="{{url('home/adminUserNetwork')}}">拓扑图管理</a>
                                 </li>
+                                <li>
+                                    <a href="{{url('home/adminWalletList')}}">钱包列表</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('home/adminRechargeLogList')}}">充值记录</a>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-list-alt fa-fw"></i> 资讯管理 <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="{{url('home/adminArticleList')}}">资讯列表</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{url('home/articleAdd')}}">资讯添加</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         @endif
-
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

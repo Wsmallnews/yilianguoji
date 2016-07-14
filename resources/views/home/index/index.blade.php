@@ -14,6 +14,7 @@
     .chat-icon{padding: 10px;border-radius: 50%;background-color: #f0ad4e;color: #FFFFFF;}
     .chat .chat-body{color:#333333;}
     .chat a:hover{text-decoration:none;}
+    #index_more{color:#333333;}
     </style>
 </head>
 
@@ -102,6 +103,7 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                            <i class="fa fa-user fa-fw"></i>
                             基本信息
                         </div>
                         <div class="panel-body">
@@ -119,7 +121,12 @@
                     <div class="chat-panel panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-comments fa-fw"></i>
-                            系统公告
+                            站内资讯
+                            <div class="btn-group pull-right">
+                                <a href="{{URL::to('home/articleList')}}" id="index_more">
+                                    <i class="fa fa-angle-double-right fa-fw"></i> 更多
+                                </a>
+                            </div>
                             <!-- <div class="btn-group pull-right">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-chevron-down"></i>
@@ -159,7 +166,7 @@
                             <ul class="chat">
                                 @foreach($article as $key => $list)
                                 <li class="left clearfix" article_id="{{$list->id}}">
-                                    <a href="{{url('home/cashList',array('id' => $list->id))}}">
+                                    <a href="{{url('home/articleView',array('id' => $list->id))}}">
                                         <span class="chat-icon pull-left">
                                             <i class="fa fa-hand-o-right fa-5x huge"></i>
                                         </span>
@@ -203,7 +210,7 @@
     <!-- /#wrapper -->
 
     @include('home.includes.loadjs')
-    
+
     @include('home.includes.footer')
 </body>
 

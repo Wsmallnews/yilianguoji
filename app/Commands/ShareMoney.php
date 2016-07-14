@@ -5,17 +5,21 @@ use App\Commands\Command;
 use Illuminate\Contracts\Bus\SelfHandling;
 use \Exception;
 use Log;
+use App\CronLog;
+use App\User;
+use Hp;
 
 class ShareMoney extends Command implements SelfHandling {
 
+	private $type;
 	/**
 	 * Create a new command instance.
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct($type)
 	{
-		//
+		$this->type = $type;
 	}
 
 	/**

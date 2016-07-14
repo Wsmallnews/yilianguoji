@@ -28,6 +28,11 @@ class Wallet extends CommonModel{
 	    ];
 	}
 
+	//关联用户
+	public function users(){
+        return $this->hasOne('App\User','id','id');
+	}
+
 	public function doAdd($id){
 		$this->id = $id;
 		$this->money = 0;
@@ -41,6 +46,10 @@ class Wallet extends CommonModel{
 		DB::beginTransaction();
 		$user = AuthUser::user();
 		$this->money = $this->money + $money;
+
+		if($this->money < 0){
+			throw new Exception("钱包余额不足");
+		}
 
 		try {
 			$result = $this->save();

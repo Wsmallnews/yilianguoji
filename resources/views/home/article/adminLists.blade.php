@@ -5,10 +5,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>提现列表 - {{$l_web['web_name']}}</title>
+    <title>资讯列表 - {{$l_web['web_name']}}</title>
     <style>
         .modal-header{border:none}
         .modal-footer{border:none}
+        .huge{font-size: 30px;}
+        .chat-icon{padding: 10px;border-radius: 50%;background-color: #f0ad4e;color: #FFFFFF;}
+        .chat .chat-body{color:#333333;}
+        .chat a:hover{text-decoration:none;}
     </style>
 </head>
 
@@ -21,7 +25,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">提现列表</h1>
+                    <h1 class="page-header">资讯列表</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -30,19 +34,18 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            我的提现列表
+                            资讯列表
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" id="list_div">
                             <div id="search_div">
                                 <form class="form-inline" id="table_div_search">
-                                    @if($l_user->super_man && Route::currentRouteName() == 'cashAdmin')
-                                    <!-- <div class="form-group">
-                                        <label>用户名</label>
-                                        <input type="text" class="form-control" name="keyword" placeholder="关键字">
-                                    </div> -->
-                                    @endif
                                     <div class="form-group">
+                                        <label>标题</label>
+                                        <input type="text" class="form-control" name="keyword" placeholder="关键字" />
+                                    </div>
+
+                                    <!-- <div class="form-group">
                                         <label>状态</label>
                                         <select class="form-control" name="status">
                                             <option value="all">全部</option>
@@ -50,12 +53,16 @@
                                             <option value="1">同意</option>
                                             <option value="-1">驳回</option>
                                         </select>
-                                    </div>
+                                    </div> -->
                                     <button type="button" class="btn btn-primary" id="search">搜索</button>
                                 </form>
                             </div>
                             <div id="table_div">
-                                @include('home.cash.li')
+                                @if($l_user->super_man && Route::currentRouteName() == 'articleListAdmin')
+                                @include('home.article.adminLi')
+                                @else
+                                @include('home.article.li')
+                                @endif
                             </div>
                         </div>
                         <!-- /.panel-body -->
@@ -101,56 +108,7 @@
     <script type="text/javascript" >
     list.init();
 
-    @if($l_user->super_man && Route::currentRouteName() == 'cashAdmin')
-    $('#myModal').modal({
-        show:false
-    });
 
-    $("#table_div").on('click',".oper_btn",function(){
-        var id = $(this).parents('tr').attr('cash_id');
-        var status = $(this).attr('status');
-
-        if(status == 1){
-            var msg = '确定要同意该用户的提现申请吗？';
-            $("#fail_msg").css({'display':'none'});
-        }else{
-            var msg = '确定要驳回该用户的提现申请吗？';
-            $("#fail_msg").css({'display':'block'});
-        }
-
-        $('#title').html(msg);
-        $('#confirm_form').find('input[name=id]').val(id);
-        $('#confirm_form').find('input[name=status]').val(status);
-        $('#myModal').modal('show');
-    });
-
-    $("#confirm").on('click',function(){
-        var data = l.parseFormJson("#confirm_form");
-
-        if(data.status == "-1" && data.fail_msg == ''){
-            $("#fail_msg").addClass('has-error');
-            return false;
-        }
-        $('#myModal').modal('hide');
-
-        l.ajax({
-            url:"{{URL::to('home/doApply')}}",
-            data:data,
-            type:'get',
-            success:function(r){
-                if(r.error == 0){
-                    l.success('操作成功');
-                    list.reload();
-                    return;
-                }
-                l.error(r.info);
-                return;
-            }
-        });
-
-        return false;
-    })
-    @endif
     </script>
     @include('home.includes.footer')
 </body>

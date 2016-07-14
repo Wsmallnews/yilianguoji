@@ -60,6 +60,33 @@ var l = {
 			return false;
 		}
 	},
+	prompt : function(oper_ids,startCB,confirmCB){
+		var defaults = {
+			modal : "#myModal",
+	        big_id : "#table_div",
+	        little_id : ".oper_btn",
+	        confirm_id : "#confirm"
+		}
+
+		$.extend(defaults, oper_ids);
+
+		$(defaults.big_id).on('click',defaults.little_id,function(){
+			l.showModal(defaults.modal,{
+				show:true,
+		        backdrop: 'static',
+		        keyboard: false
+			})
+			if(startCB != undefined){
+				startCB(this);
+			}
+		})
+
+		$(defaults.confirm_id).on('click',function(){
+			if(confirmCB != undefined){
+				confirmCB();
+			}
+		})
+	},
 	showModal : function(id,params){
 		var defaults = {
 			show:false,
@@ -70,6 +97,9 @@ var l = {
 		$.extend(defaults, params);
 
 		$(id).modal(defaults);
+	},
+	hideModel : function (id){
+		$(id).modal('hide');
 	},
 	location : function(url){
 		if(url != undefined){

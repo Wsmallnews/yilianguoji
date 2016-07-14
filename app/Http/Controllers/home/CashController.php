@@ -20,7 +20,7 @@ class CashController extends CommonController {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function _initialize()
 	{
 		//$this->middleware('home');
 	}
@@ -119,7 +119,6 @@ class CashController extends CommonController {
 	        return redirect()->intended('home/cashList')->withSuccess('提现申请成功');
 
 		}catch(Exception $e){
-			print_r($e->getMessage());exit;
 			DB::rollback();
 			return Redirect::back()->withInput(Request::input())->withErrors('余额不足，无法提现');
 		}
@@ -134,15 +133,26 @@ class CashController extends CommonController {
 		$where = array();
 
 		$cash = new Cash();
+
 		if(!empty($data['keyword'])){
-			$cash->where('name','like','%'.$data['keyword'].'%');
+			//问题未解决，暂时注释用户名搜索
+			// $cash = $cash->where('name','like','%'.$data['keyword'].'%');
 		}
 
 		if(isset($data['status']) && $data['status'] != 'all'){
-			$cash->where('status',$data['status']);
+			$cash = $cash->where('status',$data['status']);
 		}
 
-        $cash_list = $cash->with('user','bank')->orderBy('id','desc')->paginate($pageRow);
+		$cash_list = $cash->with('users','bank')->orderBy('id','desc')->paginate($pageRow);
+
+
+        // $cash_list = $cash->with(['users' => function($query){
+		// 	// if(!empty($data['keyword'])){
+		// 	$query->where('name','like','%z%');
+		// 	// }
+		// }])->with('bank')->orderBy('id','desc')->paginate($pageRow);
+		//
+		// print_r($cash_list);exit;
 
 	    if(Request::ajax()){
 	        $view = view('home.cash.li',array('cash_list' => $cash_list));

@@ -21,7 +21,7 @@ class AdminMiddleware {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)
-	{
+	{//echo "开始执行";
 		$user = AuthUser::user();
 	    if($user->super_man){
 			return $next($request);
