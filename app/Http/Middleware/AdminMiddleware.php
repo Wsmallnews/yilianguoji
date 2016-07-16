@@ -21,12 +21,16 @@ class AdminMiddleware {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)
-	{//echo "开始执行";
+	{
 		$user = AuthUser::user();
-	    if($user->super_man){
+	    if($user['super_man']){
 			return $next($request);
 	    }else{
-			return redirect('home/index')->withErrors('对不起，您没有操作权限');
+			if(Request::ajax()){
+				return Response::json(array('error'=>1,'info' => '对不起，您没有操作权限'));
+			}else{
+				return redirect('home/index')->withErrors('对不起，您没有操作权限');
+			}
 		}
 	}
 }

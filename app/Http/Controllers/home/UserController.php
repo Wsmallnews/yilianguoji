@@ -45,12 +45,12 @@ class UserController extends CommonController {
 		$user = AuthUser::user();
 
 		if($user->super_man && Route::currentRouteName() == 'userListAdmin'){
-			$where = array();
+			$userModel = User::withTrashed();
 		}else{
-			$where['parent_id'] = $user_id;
+			$userModel = User::where('parent_id',$user_id);
 		}
 
-        $user_list = User::where($where)->with('parent')->paginate($pageRow);
+        $user_list = $userModel->with('parent')->paginate($pageRow);
 
 	    if(Request::ajax()){
 
@@ -347,6 +347,36 @@ class UserController extends CommonController {
 			//可以捕获 throw 扔出的，也可以捕获 findorFail 扔出的  findorFail 会抛出具体信息 所以不使用$e->getMessage();作为返回结果
 			DB::rollback();
             return Response::json(array('error'=>1,'info' => '自助升级失败'));
+		}
+	}
+
+	//用户冻结，解冻
+	public function freeze(){
+		$data = Request::all();
+
+		$user = User::withTrashed()->find($data['id']);
+		try {
+			if($user->super_man || $user->id == Session::get('laravel_user_id')){
+				throw new Exception("对不起，您不能操作该用户！");
+			}
+
+			if($data['type'] == 'open'){
+				//解封
+				if($user->trashed()){
+					$user->restore();
+				}
+			}else if($data['type'] == 'close'){
+				if(!$user->trashed()){
+					$user->delete();
+				}
+			}else if($data['type'] == 'del'){
+				if($user->trashed()){
+					$user->forceDelete();
+				}
+			}
+			return Response::json(array('error'=>0,'info' => '操作成功'));
+		}catch(Exception $e){
+			return Response::json(array('error'=>1,'info' => $e->getMessage()));
 		}
 	}
 

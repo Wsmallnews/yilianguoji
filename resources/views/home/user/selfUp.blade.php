@@ -93,27 +93,58 @@
     </div>
     <!-- /#wrapper -->
 
+    <!-- 自助升级 -->
+    <div class="modal fade" id="selfUpModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="title_active">确定要升级吗？</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_self_up">
+                        <input type="hidden" name="id" value="0" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirm_self_up">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
     @include('home.includes.loadjs')
 
     <script>
+    //自助升级
+    l.confirm({
+        modal : "#selfUpModal",
+        big_id : "body",
+        little_id : "#auto_up",
+        confirm_id : "#confirm_self_up"
+    },undefined,
+    function(){
+        l.hideModel("#selfUpModal");
 
-    $("#auto_up").on('click',function(){
-        if(l.confirm('确定要升级吗？')){
-            l.ajax({
-                url:"{{URL::to('home/userDoSelfUp')}}",
-                type:'get',
-                success:function(r){
-                    if(r.error == 0){
-                        l.success('恭喜您，升级成功！');
-                        l.reload();
-                        return true;
-                    }
-                    l.error(r.info);
-                    return false;
+        l.ajax({
+            url:"{{URL::to('home/userDoSelfUp')}}",
+            type:'get',
+            success:function(r){
+                if(r.error == 0){
+                    l.success(r.info);
+                    l.reload();
+                    return;
                 }
-            });
-        }
-    })
+                l.error(r.info);
+                return;
+            }
+        });
+        return;
+    });
+
+
     </script>
 
     @include('home.includes.footer')

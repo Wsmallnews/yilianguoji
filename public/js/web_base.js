@@ -8,8 +8,16 @@ var l = {
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 			},
+			beforeSend: function(){
+				$('body').css({'cursor': 'wait'});
+				$('.loading').show();
+			},
 			success:function(){},
-			error:function(){}
+			error:function(){},
+			complete:function(){
+				$('body').css({'cursor': 'auto'});
+				$('.loading').hide();
+			}
 		}
 
 		$.extend(defaults, params);
@@ -53,14 +61,14 @@ var l = {
 	        keyboard: true
 		});
 	},
-	confirm : function(msg){
-		if(confirm(msg)){
-			return true;
-		}else{
-			return false;
-		}
-	},
-	prompt : function(oper_ids,startCB,confirmCB){
+	// confirm : function(msg){
+	// 	if(confirm(msg)){
+	// 		return true;
+	// 	}else{
+	// 		return false;
+	// 	}
+	// },
+	confirm : function(oper_ids,startCB,confirmCB){
 		var defaults = {
 			modal : "#myModal",
 	        big_id : "#table_div",
@@ -71,14 +79,15 @@ var l = {
 		$.extend(defaults, oper_ids);
 
 		$(defaults.big_id).on('click',defaults.little_id,function(){
+			if(startCB != undefined){
+				startCB(this);
+			}
+
 			l.showModal(defaults.modal,{
 				show:true,
 		        backdrop: 'static',
 		        keyboard: false
 			})
-			if(startCB != undefined){
-				startCB(this);
-			}
 		})
 
 		$(defaults.confirm_id).on('click',function(){
@@ -114,3 +123,18 @@ var l = {
 	}
 
 }
+
+var autoloadMethod = {
+	init : function(){
+		autoloadMethod.resetBtn();
+	},
+	resetBtn : function(){
+		if($("#resetBtn").length > 0){
+			$("#resetBtn").on('click',function(){
+				l.location();
+			});
+		}
+	}
+}
+
+autoloadMethod.init();

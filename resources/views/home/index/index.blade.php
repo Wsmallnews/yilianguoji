@@ -8,8 +8,6 @@
     <title>欢迎来到 {{$l_web['web_name']}} - 会员管理系统</title>
     <style>
     .huge{font-size: 30px;}
-    .panel .panel-heading a{color:#FFFFFF;}
-    .panel-primary{background-color: #337ab7;}
     .panel-infos{background-color: #f0ad4e;}
     .chat-icon{padding: 10px;border-radius: 50%;background-color: #f0ad4e;color: #FFFFFF;}
     .chat .chat-body{color:#333333;}
@@ -107,11 +105,11 @@
                             基本信息
                         </div>
                         <div class="panel-body">
-                            <p class="lead">用户名：{{$user->name}}</p>
-                            <p>邮箱：{{$user->email}}</p>
-                            <p>手机号：{{$user->phone}}</p>
-                            <p>真实姓名：{{$user->real_name}}</p>
-                            <p>身份证号：{{$user->cert_no}}</p>
+                            <p class="lead">用户名：{{$l_user->name}}</p>
+                            <p>邮箱：{{$l_user->email}}</p>
+                            <p>手机号：{{$l_user->phone}}</p>
+                            <p>真实姓名：{{$l_user->real_name}}</p>
+                            <p>身份证号：{{$l_user->cert_no}}</p>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -127,39 +125,6 @@
                                     <i class="fa fa-angle-double-right fa-fw"></i> 更多
                                 </a>
                             </div>
-                            <!-- <div class="btn-group pull-right">
-                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-chevron-down"></i>
-                                </button>
-                                <ul class="dropdown-menu slidedown">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-refresh fa-fw"></i> Refresh
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-check-circle fa-fw"></i> Available
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-times fa-fw"></i> Busy
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-clock-o fa-fw"></i> Away
-                                        </a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-sign-out fa-fw"></i> Sign Out
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div> -->
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">

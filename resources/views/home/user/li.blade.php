@@ -10,7 +10,10 @@
                                             <th>注册时间</th>
                                             <th>激活状态</th>
                                             <th>激活时间</th>
-                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')<th>操作</th>@endif
+                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')
+                                            <th>冻结</th>
+                                            <th>操作</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -25,7 +28,10 @@
                                             <td>{{$list->created_at}}</td>
                                             <td>@if($list->status)已激活 @else 未激活 <button type="button" class="btn btn-primary active_btn" >激活</button>@endif</td>
                                             <td>{{$list->invi_at}}</td>
-                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')<td><a href="{{URL::to('home/userEdit',array('id' => $list->id))}}" class="btn btn-info edit_user_btn" >修改资料</a>  <button type="button" class="btn btn-warning reset_user_btn" >重置密码</button></td>@endif
+                                            @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')
+                                            <td>@if($list->trashed())<button type="button" class="btn btn-default freeze_btn" btn_type="open">解冻</button>  <button type="button" class="btn btn-danger freeze_btn" btn_type="del">删除</button>@else<button type="button" class="btn btn-warning freeze_btn" btn_type="close">冻结</button>@endif</td>
+                                            <td><a href="{{URL::to('home/userEdit',array('id' => $list->id))}}" class="btn btn-info edit_user_btn" >修改资料</a>  <button type="button" class="btn btn-warning reset_user_btn" >重置密码</button></td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                     </tbody>

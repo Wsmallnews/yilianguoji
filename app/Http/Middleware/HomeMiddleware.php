@@ -9,6 +9,8 @@ use Hp;
 use Queue;
 use App\Commands\ShareMoney;
 use View;
+use Request;
+use Response;
 
 class HomeMiddleware {
 
@@ -28,10 +30,25 @@ class HomeMiddleware {
 
 	    if(!AuthUser::check()){
 	        if($route != 'login' && $route != 'doLogin'){
-	            return redirect('home/login');
+				if(Request::ajax()){
+					return Response::json(array('error'=>1,'info' => '您已退出登录，请重新登录'));
+				}else{
+					return redirect('home/login');
+				}
 	        }
 	    }else{
-			View::share('l_user', AuthUser::user());
+			$user = AuthUser::user();
+			View::share('l_user', $user);
+			if(!$user){
+				//如果用户在已经登录的情况下，被管理员删除，则退出登录
+				AuthUser::logout();
+
+				if(Request::ajax()){
+					return Response::json(array('error'=>0,'info' => '您已退出登录，请重新登录'));
+				}else{
+					return redirect('home/login');
+				}
+			}
 	        if($route == 'login' || $route == 'doLogin'){
 	            return redirect('home/index');
 	        }

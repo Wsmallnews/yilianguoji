@@ -58,7 +58,7 @@
     @include('home.includes.loadjs')
     <script type="text/javascript" >
 
-    list.init();
+    list.init_page();
 
     </script>
 

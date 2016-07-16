@@ -1,16 +1,25 @@
         <style>
         .navbar-header{height:80px;}
         .navbar-top-links{height:80px;}
-        @media (min-width: 768px){
+
+        /*@media (min-width: 768px){
             .sidebar {margin-top:81px;}
-        }
+        }*/
         .navbar-top-links .dropdown-messages {width:auto;}
         .navbar-brand{height:80px;}
         .web_name{line-height: 50px;font-size:28px;}
         #title i {font-size: 25px;}
         .modal-title i {margin-right: 5px;}
+
+        .modal-header{border:none}
+        .modal-footer{border:none}
+        .loading{width:175px; margin: 10px auto; padding:5px 10px;color:#FFFFFF;display:none;}
+        .panel .panel-heading a{color:#FFFFFF;}
+        .panel-primary{background-color: #337ab7;}
+        .loading_img{width:20px;height:20px;margin-right: 5px;}
         </style>
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;position:relative">
+
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -22,7 +31,6 @@
                 <div class="navbar-brand web_name">{{$l_web['web_name']}}</div>
             </div>
             <!-- /.navbar-header -->
-
             <ul class="nav navbar-top-links navbar-right">
                 <!--<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -244,6 +252,7 @@
                 <!-- /.sidebar-collapse -->
             </div>
             <!-- /.navbar-static-side -->
+            <div class="panel panel-primary loading"><img src="{{ asset('/home/images/loading.gif') }}" class="loading_img" />正在处理，请稍候...</div>
         </nav>
 
         <div class="modal fade" id="error_msg_modal" role="dialog" aria-labelledby="gridSystemModalLabel">

@@ -12,6 +12,7 @@ use App\RechargeLog;
 use \Exception;
 use Log;
 use DB;
+use Artisan;
 
 class WalletController extends CommonController {
 
@@ -31,6 +32,9 @@ class WalletController extends CommonController {
 	 * @return Response
 	 */
 	public function wallet() {
+		//处理见点奖，直推奖
+		Artisan::call('queue:work', ['--tries' => '2']);
+
 		$wallet = AuthUser::user()->getWalletOne()->first();
 
 		return view('home.wallet.wallet',array('wallet' => $wallet));

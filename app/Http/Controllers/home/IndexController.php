@@ -100,11 +100,7 @@ class IndexController extends CommonController {
 		// 	echo "失败";
 		// 	print_r($e);
 		// }exit;
-		$user = AuthUser::user();
-
 		$article = Article::orderBy('is_top','desc')->orderBy('id','desc')->paginate(10);
-
-		Artisan::call('queue:work', ['--tries' => '2']);
 
 		//平分奖励
 		Bus::dispatch(
@@ -115,7 +111,7 @@ class IndexController extends CommonController {
 	        new ShareMoney(2)
 	    );
 
-	    return view('home.index.index',array('user' => $user, 'article' => $article));
+	    return view('home.index.index',array('article' => $article));
 	}
 
 

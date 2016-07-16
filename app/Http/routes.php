@@ -71,6 +71,7 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
         Route::get('adminUserNetwork/{id?}/{keyword?}', 'UserController@adminUserNetwork');           //管理员网络图
         Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));       //管理员添加用户
         Route::get('resetPass', 'UserController@resetPass');       //管理员重置密码
+        Route::get('userFreeze', array('as' => 'userListAdmin','uses' => 'UserController@freeze'));  //用户冻结，解冻
 
         Route::get('articleAdd', 'ArticleController@add');
         Route::get('articleEdit/{id?}', 'ArticleController@Edit');

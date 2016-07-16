@@ -7,8 +7,6 @@
 
     <title>提现列表 - {{$l_web['web_name']}}</title>
     <style>
-        .modal-header{border:none}
-        .modal-footer{border:none}
     </style>
 </head>
 
@@ -69,7 +67,7 @@
     </div>
     <!-- /#wrapper -->
 
-    <div class="modal fade" id="myModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal fade" id="cashModal" role="dialog" aria-labelledby="gridSystemModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -90,7 +88,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="confirm">确认</button>
+                    <button type="button" class="btn btn-primary" id="confirm_cash">确认</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -99,16 +97,18 @@
 
     @include('home.includes.loadjs')
     <script type="text/javascript" >
-    list.init();
+    list.init_page();
 
     @if($l_user->super_man && Route::currentRouteName() == 'cashAdmin')
-    $('#myModal').modal({
-        show:false
-    });
+    l.confirm({
+        modal : "#cashModal",
+        big_id : "#table_div",
+        little_id : ".oper_btn",
+        confirm_id : "#confirm_cash"
+    },function(obj){
 
-    $("#table_div").on('click',".oper_btn",function(){
-        var id = $(this).parents('tr').attr('cash_id');
-        var status = $(this).attr('status');
+        var id = $(obj).parents('tr').attr('cash_id');
+        var status = $(obj).attr('status');
 
         if(status == 1){
             var msg = '确定要同意该用户的提现申请吗？';
@@ -121,17 +121,16 @@
         $('#title').html(msg);
         $('#confirm_form').find('input[name=id]').val(id);
         $('#confirm_form').find('input[name=status]').val(status);
-        $('#myModal').modal('show');
-    });
 
-    $("#confirm").on('click',function(){
+    },function(){
         var data = l.parseFormJson("#confirm_form");
 
         if(data.status == "-1" && data.fail_msg == ''){
             $("#fail_msg").addClass('has-error');
             return false;
         }
-        $('#myModal').modal('hide');
+
+        l.hideModel("#activeModal");
 
         l.ajax({
             url:"{{URL::to('home/doApply')}}",
@@ -139,7 +138,7 @@
             type:'get',
             success:function(r){
                 if(r.error == 0){
-                    l.success('操作成功');
+                    l.success(r.info);
                     list.reload();
                     return;
                 }
@@ -149,7 +148,8 @@
         });
 
         return false;
-    })
+    });
+
     @endif
     </script>
     @include('home.includes.footer')

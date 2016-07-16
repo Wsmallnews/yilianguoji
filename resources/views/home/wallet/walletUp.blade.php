@@ -68,7 +68,7 @@
     @include('home.includes.loadjs')
     <script type="text/javascript" >
 
-    list.init('#user_id');
+    list.init_page('#user_id');
 
     $("#search_url").on('click',function(){
         var keyword = $('input[name=keyword]').val();

@@ -87,13 +87,9 @@
 
     @include('home.includes.loadjs')
     <script type="text/javascript" >
-    list.init();
+    list.init_page();
 
-    $('#myModal').modal({
-        show:false
-    });
-
-    l.prompt({
+    l.confirm({
         modal : "#myModal",
         big_id : "#table_div",
         little_id : ".oper_btn",
@@ -104,7 +100,6 @@
 
         $('#wallet_form').find('input[name=user_id]').val(id);
         $("#modal_title").find('span').html(user_name);
-        $('#myModal').modal('show');
     },function(){
         var data = l.parseFormJson("#wallet_form");
 

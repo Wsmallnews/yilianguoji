@@ -47,7 +47,7 @@ class CashController extends CommonController {
             $where['status'] = $data['status'];
         }
 
-        $cash_list = Cash::where($where)->with('user','bank')->orderBy('id','desc')->paginate($pageRow);
+        $cash_list = Cash::where($where)->with('users','bank')->orderBy('id','desc')->paginate($pageRow);
 
 	    if(Request::ajax()){
 

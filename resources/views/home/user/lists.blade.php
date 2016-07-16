@@ -55,12 +55,13 @@
     </div>
     <!-- /#wrapper -->
 
-    <div class="modal fade" id="myModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <!-- 修改密码 -->
+    <div class="modal fade" id="resetPassModal" role="dialog" aria-labelledby="gridSystemModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="title"></h4>
+                    <h4 class="modal-title" id="title_reset_pass"></h4>
                 </div>
                 <div class="modal-body">
                     <form id="reset_form">
@@ -78,55 +79,154 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="confirm">确认</button>
+                    <button type="button" class="btn btn-primary" id="confirm_reset_pass">确认</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- 激活用户 -->
+    <div class="modal fade" id="activeModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="title_active">确定要激活该用户吗？激活将消耗{{$l_web->active_money}} 亿联币！</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_active">
+                        <input type="hidden" name="id" value="0" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirm_active">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <!-- 冻结用户 -->
+    <div class="modal fade" id="freezeModal" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="title_freeze"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_freeze">
+                        <input type="hidden" name="id" value="0" />
+                        <input type="hidden" name="type" value="close" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirm_freeze">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
     @include('home.includes.loadjs')
     <script type="text/javascript" >
 
-    list.init();
+    list.init_page();
 
-    $("#table_div").on('click','.active_btn',function(){
-        var id = $(this).parents('tr').attr('user_id');
-        if(confirm('确定要激活该用户吗？激活将消耗600 亿联币！')){
-            l.ajax({
-                url:"{{URL::to('home/userActive')}}",
-                data:{'id':id},
-                type:'get',
-                success:function(r){
-                    if(r.error == 0){
-                        l.success('操作成功');
-                        list.reload();
-                        return;
-                    }
-                    l.error('操作失败');
+    //激活用户
+    l.confirm({
+        modal : "#activeModal",
+        big_id : "#table_div",
+        little_id : ".active_btn",
+        confirm_id : "#confirm_active"
+    },function(obj){
+        var id = $(obj).parents('tr').attr('user_id');
+        var user_name = $(obj).parents('tr').find('.user_name').html();
+
+        $('#form_active').find('input[name=id]').val(id);
+    },function(){
+        var data = l.parseFormJson("#form_active");
+
+        l.hideModel("#activeModal");
+
+        l.ajax({
+            url:"{{URL::to('home/userActive')}}",
+            data:data,
+            type:'get',
+            success:function(r){
+                if(r.error == 0){
+                    l.success(r.info);
+                    list.reload();
                     return;
                 }
-            });
-        }
+                l.error(r.info);
+                return;
+            }
+        });
         return false;
     });
 
+    @if($l_user->super_man && Route::currentRouteName() == 'userListAdmin')
+    //冻结，解冻，删除
+    l.confirm({
+        modal : "#freezeModal",
+        big_id : "#table_div",
+        little_id : ".freeze_btn",
+        confirm_id : "#confirm_freeze"
+    },function(obj){
+        var id = $(obj).parents('tr').attr('user_id');
+        var user_name = $(obj).parents('tr').find('.user_name').html();
+        var type = $(obj).attr('btn_type');
+        if(type == 'open'){
+            var msg = "确定要解冻“"+ user_name +"”吗？";
+        }else if(type == 'del'){
+            var msg = "确定要删除“"+ user_name +"”吗？删除之后不可恢复";
+        }else {
+            var msg = "确定要冻结“"+ user_name +"”吗？";
+        }
+        $('#form_freeze').find('input[name=type]').val(type);
+        $('#form_freeze').find('input[name=id]').val(id);
+        $('#title_freeze').html(msg);
+    },function(){
+        var data = l.parseFormJson("#form_freeze");
 
-    $('#myModal').modal({
-        show:false
+        l.hideModel("#freezeModal");
+
+        l.ajax({
+            url:"{{URL::to('home/userFreeze')}}",
+            data:data,
+            type:'get',
+            success:function(r){
+                if(r.error == 0){
+                    l.success(r.info);
+                    list.reload();
+                    return;
+                }
+                l.error(r.info);
+                return;
+            }
+        });
+        return false;
     });
 
-    $("#table_div").on('click',".reset_user_btn",function(){
-        var id = $(this).parents('tr').attr('user_id');
-        var user_name = $(this).parents('tr').find('.user_name').html();
+    //重置密码
+    l.confirm({
+        modal : "#resetPassModal",
+        big_id : "#table_div",
+        little_id : ".reset_user_btn",
+        confirm_id : "#confirm_reset_pass"
+    },function(obj){
+        var id = $(obj).parents('tr').attr('user_id');
+        var user_name = $(obj).parents('tr').find('.user_name').html();
 
         var msg = '正在为“'+user_name+'”重置密码';
 
-        $('#title').html(msg);
+        $('#title_reset_pass').html(msg);
         $('#reset_form').find('input[name=id]').val(id);
-        $('#myModal').modal('show');
-    });
 
-    $("#confirm").on('click',function(){
+    },function(){
         var data = l.parseFormJson("#reset_form");
 
         if(data.password == ''){
@@ -136,6 +236,8 @@
             $("#conf_password").addClass('has-error');
             return false;
         }
+
+        l.hideModel("#resetPassModal");
 
         l.ajax({
             url:"{{URL::to('home/resetPass')}}",
@@ -154,7 +256,10 @@
         });
 
         return false;
-    })
+
+    });
+    @endif
+
     </script>
 
     @include('home.includes.footer')

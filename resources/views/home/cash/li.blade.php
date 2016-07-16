@@ -20,7 +20,7 @@
                                     @foreach($cash_list as $list)
                                         <tr class="gradeC" cash_id="{{$list->id}}">
                                             <td>{{$list->id}}</td>
-                                            <td>{{$list->users->name}}</td>
+                                            <td>{{$list['users']['name']}}</td>
                                             <td>{{$list->money}}</td>
                                             <td>{{$list->charge_money}}</td>
                                             <td>{{$list->card_type_name}}</td>
