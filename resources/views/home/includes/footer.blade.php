@@ -8,3 +8,4 @@
 @endif
 
 </script>
+<img src="{{URL::to('crontab')}}" style="width:0px;height:0px;" />

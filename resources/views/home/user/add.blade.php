@@ -30,22 +30,42 @@
                     <div class="form-group">
                         <label class="col-lg-3 control-label">搜索推荐人</label>
                         <div class="col-lg-3">
-                            <input type="text" class="form-control" name="keyword" placeholder="关键字">
+                            <input type="text" class="form-control" name="keyword_direct" placeholder="关键字">
                         </div>
                         <div class="col-lg-3">
-                            <button type="button" class="btn btn-primary" id="search_url">搜索</button>
+                            <button type="button" class="btn btn-primary" id="search_direct">搜索</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label">推荐人</label>
                         <div class="col-lg-5">
-                            <select class="form-control" id="user_id" name="user_id">
+                            <select class="form-control" id="direct_id" name="direct_id">
                                 <option value="0">请选择用户...</option>
                                 @include('home.wallet.option')
                             </select>
                         </div>
                     </div>
                     @endif
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">搜索接点人</label>
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" name="keyword_parent" placeholder="关键字">
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-primary" id="search_parent">搜索</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">接点人</label>
+                        <div class="col-lg-5">
+                            <select class="form-control" id="parent_id" name="parent_id">
+                                <option value="0">请选择用户...</option>
+                                @include('home.wallet.option')
+                            </select>
+                        </div>
+                    </div>
+
 
                     <div class="form-group" id="name">
                         <label class="col-lg-3 control-label">用户名</label>
@@ -94,11 +114,26 @@
 
     <script>
 
-    list.init_page('#user_id');
+    $("#search_direct").on('click',function(){
+        var keyword = $('input[name=keyword_direct]').val();
+        list.search_list({keyword:keyword},function(r){
+            if(r.error == 0){
+    			$('#direct_id').html(r.data.html);
+    		}else{
+    			l.error(r.info);
+    		}
+        });
+    })
 
-    $("#search_url").on('click',function(){
-        var keyword = $('input[name=keyword]').val();
-        list.search_list({keyword:keyword});
+    $("#search_parent").on('click',function(){
+        var keyword = $('input[name=keyword_parent]').val();
+        list.search_list({keyword:keyword},function(r){
+            if(r.error == 0){
+    			$('#parent_id').html(r.data.html);
+    		}else{
+    			l.error(r.info);
+    		}
+        });
     })
 
     function validate(type){

@@ -13,6 +13,8 @@ use \Exception;
 use Log;
 use DB;
 use Artisan;
+use Event;
+use App\Events\LogEvent as AdminLog;
 
 class WalletController extends CommonController {
 
@@ -80,6 +82,11 @@ class WalletController extends CommonController {
 			$rechargeLog->money = $money;
 
 			$rechargeLog->save();
+
+			$log_data = array(
+				'log_info' => '钱包充值：成功【id：'.$user_id."】",
+			);
+			Event::fire(new AdminLog($log_data));
 
 			DB::commit();
 			if(Request::ajax()){

@@ -12,6 +12,8 @@ use App\Wallet;
 use App\User;
 use DB;
 use \Exception;
+use Event;
+use App\Events\LogEvent as AdminLog;
 
 class CashController extends CommonController {
 
@@ -181,6 +183,7 @@ class CashController extends CommonController {
 			$total_money = $cash->money + $cash->charge_money;	//提现金额，加手续费
 
 			if($status == 1){
+				$status_name = '通过';
 				//扣除钱包锁定余额
 				$wallet = Wallet::findOrFail($cash->u_id);
 
@@ -196,6 +199,7 @@ class CashController extends CommonController {
 					throw new Exception("该用户锁定余额不足");
 				}
 			}else if($status == -1){
+				$status_name = '驳回';
 				//资金回滚，扣除锁定余额，增加余额
 				$wallet = Wallet::findOrFail($cash->u_id);
 
@@ -210,6 +214,11 @@ class CashController extends CommonController {
 			$cash->fail_msg = $fail_msg;
 			$cash->status = $status;
 			$cash->save();
+
+			$log_data = array(
+				'log_info' => '提现处理：'.$status_name.'【id：'.$id."】",
+			);
+			Event::fire(new AdminLog($log_data));
 
 			DB::commit();
 	        return Response::json(array('error'=>0,'info' => '处理成功'));

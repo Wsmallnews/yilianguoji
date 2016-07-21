@@ -7,6 +7,8 @@ use \Exception;
 use Log;
 use App\CronLog;
 use App\User;
+use App\Wallet;
+use DB;
 use Hp;
 
 class ShareMoney extends Command implements SelfHandling {

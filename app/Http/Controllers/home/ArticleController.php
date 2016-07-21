@@ -13,7 +13,7 @@ use App\Article;
 use DB;
 use \Exception;
 use Event;
-use App\Events\Log as AdminLog;
+use App\Events\LogEvent as AdminLog;
 
 class ArticleController extends CommonController {
 
@@ -128,12 +128,10 @@ class ArticleController extends CommonController {
 
 			$article->save();
 
-			// $data = array(
-			// 	'u_id' => Session::get('laravel_user_id'),
-			// 	'log_info' => '文章添加/修改'
-			// );
-			//
-			// print_r(Event::fire(new AdminLog($data)));exit;
+			$log_data = array(
+				'log_info' => '资讯：添加/编辑成功【id：'.$article->id."】",
+			);
+			Event::fire(new AdminLog($log_data));
 
 			DB::commit();
 
@@ -142,7 +140,7 @@ class ArticleController extends CommonController {
 		}catch(Exception $e){
 			print_r($e->getMessage());
 			DB::rollback();
-			return Redirect::back()->withInput(Request::all())->withErrors('文章添加失败');
+			// return Redirect::back()->withInput(Request::all())->withErrors('文章保存失败');
 		}
     }
 

@@ -74,8 +74,8 @@ class SeePrize extends Command implements SelfHandling, ShouldBeQueued {
 
 		DB::beginTransaction();
 		try{
-			//一级直推奖励
-			$parent_wallet = $wallet->findorFail($userinfoP['id']);
+			//直推奖励，找到直推人，进行直推奖励
+			$parent_wallet = $wallet->findorFail($$userinfo['direct_id']);
 
 			$result = $parent_wallet->increaseMoney($direct_prize,1);
 			if(!$result){

@@ -2,8 +2,11 @@
 
 use Illuminate\Contracts\Hp\Hp as HpContract;
 use App\Setting;
+use Session;
 
 class Hp implements HpContract {
+
+	private $log_data = array();
 
 	public function l_web(){
 		return Setting::find(1);

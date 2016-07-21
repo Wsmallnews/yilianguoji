@@ -92,6 +92,9 @@ Route::group(['middleware' => 'home'],function(){
     Route::get('/', 'home\IndexController@login');
     Route::get('home', 'home\IndexController@login');
 });
+
+Route::get('crontab', 'home\IndexController@crontab');   //充值记录
+
 // Route::controllers([
 // 	'auth' => 'Auth\AuthController',
 // 	'password' => 'Auth\PasswordController',

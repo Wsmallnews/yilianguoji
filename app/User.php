@@ -16,7 +16,7 @@ class User extends CommonModel{
 
 	protected $hidden = ['password'];	//不出现在 数组或 JSON 格式的属性数据
 
-	protected $fillable = array('name','parent_id','nick_name', 'email', 'password', 'phone', 'gender', 'birth', 'real_name', 'cert_no', 'card_type', 'card_bank', 'card_name', 'card_no');
+	protected $fillable = array('name','parent_id','nick_name', 'direct_id', 'email', 'password', 'phone', 'gender', 'birth', 'real_name', 'cert_no', 'card_type', 'card_bank', 'card_name', 'card_no');
 
 	//登录验证
 	public static function loginRole(){
@@ -39,7 +39,8 @@ class User extends CommonModel{
             'name' => 'required|unique:users',
 	        'password' => 'required',
             'confirmPassword' => 'required|same:password',
-            'parent_id' => 'required'
+            'parent_id' => 'required',
+            'direct_id' => 'required'
 	    ];
     }
 
@@ -50,7 +51,8 @@ class User extends CommonModel{
 	        'password.required' => '密码不能为空',
             'confirmPassword.required' => '两次输入密码不一致',
             'confirmPassword.same' => '两次输入密码不一致',
-            'parent_id.required' => '必须有邀请人'
+            'parent_id.required' => '必须有接点人',
+            'direct_id.required' => '必须有推荐人',
 	    ];
 	}
 
@@ -111,6 +113,11 @@ class User extends CommonModel{
     //载入父级信息
     public function parent(){
         return $this->belongsTo('App\User','parent_id');
+    }
+
+    //载入推荐人信息
+    public function direct(){
+        return $this->belongsTo('App\User','direct_id');
     }
 
     //载入银行名称

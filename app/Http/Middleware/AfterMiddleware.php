@@ -15,8 +15,6 @@ class AfterMiddleware {
 	{
 		$response = $next($request);
 
-        // echo "这是后置中间件";
-
         return $response;
 	}
 

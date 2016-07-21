@@ -8,6 +8,8 @@ use Redirect;
 use Session;
 use Response;
 use DB;
+use Event;
+use App\Events\LogEvent as AdminLog;
 
 class SettingController extends CommonController {
 
@@ -48,6 +50,11 @@ class SettingController extends CommonController {
 		$setting->fill($data);
 
         $setting->save();
+
+		$log_data = array(
+			'log_info' => '系统设置：设置成功',
+		);
+		Event::fire(new AdminLog($log_data));
 
 		return redirect('home/index')->withSuccess('设置成功');
     }

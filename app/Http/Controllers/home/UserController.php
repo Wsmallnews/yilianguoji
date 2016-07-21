@@ -20,6 +20,8 @@ use Hp;
 use Log;
 use Route;
 use App\Bank;
+use Event;
+use App\Events\LogEvent as AdminLog;
 
 class UserController extends CommonController {
 
@@ -65,8 +67,8 @@ class UserController extends CommonController {
 
     public function add() {
 		$user = AuthUser::user();
+		$keyword = Request::input('keyword','');
 		if($user->super_man){
-			$keyword = Request::input('keyword');
 
 			if (!empty($keyword)) {
 				$user_list = User::where('name','like','%'.$keyword.'%')->get();
@@ -74,7 +76,16 @@ class UserController extends CommonController {
 				$user_list = User::get();
 			}
 		}else{
-			$user_list = array();
+			$start_list = array();
+			if(!empty($keyword)){
+				if(strpos($user->name,$keyword) !== false){
+					$start_list = array($user);
+				}
+			}else{
+				$start_list = array($user);
+			}
+
+			$user_list = $this->getUserChildren(Session::get('laravel_user_id'),$start_list,$keyword);
 		}
 
 		if(Request::ajax()){
@@ -88,26 +99,46 @@ class UserController extends CommonController {
 
     public function doAdd() {
 		$l_web = app('l_web');
-		$data = Request::input();
+		$data = Request::all();
 
 		$user = AuthUser::user();
 
-		if(isset($data['user_id']) && $user->super_man){
-			$user_info = User::find($data['user_id']);
-			if(!$user_info){
-				return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('没有找到该用户');
+		if(isset($data['direct_id']) && $user->super_man){
+			$direct_info = User::find($data['direct_id']);
+			if(!$direct_info){
+				return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('没有找到该推荐人');
 			}
 		}else{
-			$user_info = $user;
+			//普通用户推荐人只能是自己
+			$direct_info = $user;
+			$data['direct_id'] = $direct_info->id;
+		}
+
+		if(isset($data['parent_id'])){
+			$parent_info = User::find($data['parent_id']);
+
+			if(!$parent_info){
+				return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('没有找到该接点人');
+			}
+
+			if(!$user->super_man){
+				$start_list = array($user->id);
+				$user_ids = $this->getUserChildren($user->id,$start_list,'',true);
+
+				if(!in_array($data['parent_id'],$user_ids)){
+					return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('不能设置改接点人');
+				}
+			}
+		}else{
+			//不填写接点人，接点人就是自己
+			$parent_info = $user;
+			$data['parent_id'] = $parent_info->id;
 		}
 
 		//每人最多邀请三个直属
-		if($user_info->children_num >= 3){
-			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('最多添加三个直属');
+		if($parent_info->children_num >= 3){
+			return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('接点人最多添加三个直属');
 		}
-
-
-		$data['parent_id'] = Session::get('laravel_user_id');
 
         $validate = Validator::make($data,User::addFastRole(),User::addFastRoleMsg());
 
@@ -118,8 +149,8 @@ class UserController extends CommonController {
 		DB::beginTransaction();
 		try {
 			//修改用户信息
-			$user_info->children_num = $user_info->children_num + 1;
-			$user_info->save();
+			$parent_info->children_num = $parent_info->children_num + 1;
+			$parent_info->save();
 
 			$data['password'] = bcrypt($data['password']);//设置密码
 	        $user = new User($data);
@@ -132,10 +163,14 @@ class UserController extends CommonController {
 				$wallet->doAdd($u_id);
 			}
 
+			$log_data = array(
+				'log_info' => '用户添加：成功【id：'.$user->id."】",
+			);
+			Event::fire(new AdminLog($log_data));
+
 			DB::commit();
-			return redirect('home/userList');
+			return redirect('home/userList')->withSuccess('用户添加成功');
 		}catch(Exception $e) {
-			// print_r($e->getMessage());
 			DB::rollback();
             return Redirect::back()->withInput(Request::except('password','confirmPassword'))->withErrors('添加失败');
 		}
@@ -147,17 +182,17 @@ class UserController extends CommonController {
 
 		$user = User::find($id);
 
-		if($user->status){
-			return Response::json(array('error'=>1,'info' => '该用户已激活，不需要重复激活'));
-		}
-
-		// if($user->parent_id != Session::get('laravel_user_id')){
-		// 	return Response::json(array('error'=>1,'info' => '您不能激活该用户'));
-		// }
-
 		DB::beginTransaction();
 
 		try{
+			if($user->status){
+				throw new Exception("该用户已激活，不需要重复激活");
+			}
+
+			if($user->direct_id != Session::get('laravel_user_id')){
+				throw new Exception("对不起，您不能激活该用户！");
+			}
+
 			$wallet = Wallet::findorFail(Session::get('laravel_user_id'));
 
 			// 扣除登录用户亿联币
@@ -173,6 +208,11 @@ class UserController extends CommonController {
 
 			$result = $user->save();
 
+			$log_data = array(
+				'log_info' => '用户激活：成功【id：'.$user->id."】",
+			);
+			Event::fire(new AdminLog($log_data));
+
 			//添加队列
 			Queue::push(new SeePrize($id));
 
@@ -180,7 +220,7 @@ class UserController extends CommonController {
 			return Response::json(array('error'=>0,'info' => '激活成功'));
 		}catch(Exception $e) {
 			DB::rollback();
-            return Response::json(array('error'=>1,'info' => '激活失败'));
+            return Response::json(array('error'=>1,'info' => $e->getMessage()));
 		}
 	}
 
@@ -233,6 +273,11 @@ class UserController extends CommonController {
 
         $user->save();
 
+		$log_data = array(
+			'log_info' => '用户银行卡：编辑成功【id：'.$user->id."】",
+		);
+		Event::fire(new AdminLog($log_data));
+
 		return redirect('home/index')->withSuccess('银行卡设置成功');
 	}
 
@@ -257,6 +302,11 @@ class UserController extends CommonController {
 
 		$user->save();
 
+		$log_data = array(
+			'log_info' => '用户修改密码：成功【id：'.$user->id."】",
+		);
+		Event::fire(new AdminLog($log_data));
+
 		return redirect('home/index')->withSuccess('密码修改成功');
 	}
 
@@ -272,6 +322,11 @@ class UserController extends CommonController {
 
 			$user->password = bcrypt($data['password']);
 			$user->save();
+
+			$log_data = array(
+				'log_info' => '管理员重置密码：成功【id：'.$user->id."】",
+			);
+			Event::fire(new AdminLog($log_data));
 
 			return Response::json(array('error'=>0,'info' => '重置成功'));
 		}catch(Exception $e){
@@ -341,6 +396,11 @@ class UserController extends CommonController {
 
 			$result = $user->save();
 
+			$log_data = array(
+				'log_info' => '用户自助升级：成功【id：'.$user->id."】",
+			);
+			Event::fire(new AdminLog($log_data));
+
 			DB::commit();
 			return Response::json(array('error'=>0,'info' => '自助升级成功'));
 		}catch(Exception $e) {
@@ -364,14 +424,29 @@ class UserController extends CommonController {
 				//解封
 				if($user->trashed()){
 					$user->restore();
+
+					$log_data = array(
+						'log_info' => '用户解冻：成功【id：'.$user->id."】",
+					);
+					Event::fire(new AdminLog($log_data));
 				}
 			}else if($data['type'] == 'close'){
 				if(!$user->trashed()){
 					$user->delete();
+
+					$log_data = array(
+						'log_info' => '用户冻结：成功【id：'.$user->id."】",
+					);
+					Event::fire(new AdminLog($log_data));
 				}
 			}else if($data['type'] == 'del'){
 				if($user->trashed()){
 					$user->forceDelete();
+
+					$log_data = array(
+						'log_info' => '用户删除：成功【id：'.$user->id."】",
+					);
+					Event::fire(new AdminLog($log_data));
 				}
 			}
 			return Response::json(array('error'=>0,'info' => '操作成功'));
@@ -461,6 +536,31 @@ class UserController extends CommonController {
 			'</div>';
 		}
 		return $str;
+	}
+
+	public function getUserChildren($user_id,&$user_array = array(),$keyword = '',$is_ids = false){
+		$son_list = User::where('parent_id',$user_id)->orderBy('id', 'asc')->get();
+
+		foreach($son_list as $key => $value){
+			if(!empty($keyword)){
+				if(strpos($value->name,$keyword) !== false){
+					if($is_ids){
+						$user_array[] = $value->id;
+					}else{
+						$user_array[] = $value;
+					}
+				}
+			}else{
+				if($is_ids){
+					$user_array[] = $value->id;
+				}else{
+					$user_array[] = $value;
+				}
+			}
+
+			$this->getUserChildren($value['id'],$user_array,$keyword,$is_ids);
+		}
+		return $user_array;
 	}
 
 	// function get_array($id=0){

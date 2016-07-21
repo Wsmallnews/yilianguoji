@@ -4,22 +4,25 @@ use App\Events\LogEvent;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldBeQueued;
+use App\AdminLog;
+use Request;
+use Session;
 
 class AdminLogEvent {
 
-	private $data = array(
-		'u_id',
-		'log_info'
-	);
+	// private $data = array(
+	// 	'u_id',
+	// 	'log_info'
+	// );
 	/**
 	 * Create the event handler.
 	 *
 	 * @return void
 	 */
-	public function __construct($data)
+	public function __construct()
 	{
 		//
-		$this->data = $data;
+		// $this->data = $data;
 	}
 
 	/**
@@ -28,10 +31,17 @@ class AdminLogEvent {
 	 * @param  Log  $event
 	 * @return void
 	 */
-	public function handle(Log $event)
+	public function handle(LogEvent $event)
 	{
-		//
-		print_r($this->data);exit;
+		//记录日志
+		$data = $event->log_data;
+
+		$adminLog = new AdminLog();
+		$adminLog->u_id = isset($data['u_id']) ? $data['u_id'] : Session::get('laravel_user_id');
+		$adminLog->log_info = $data['log_info'];
+		$adminLog->ip_address = Request::ip();
+		$adminLog->save();
+		return true;
 	}
 
 }

@@ -3,6 +3,7 @@
 use App\Events\Event;
 
 use Illuminate\Queue\SerializesModels;
+use Hp;
 
 class LogEvent extends Event {
 
@@ -13,9 +14,8 @@ class LogEvent extends Event {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct($log_data)
 	{
-		//
+		$this->log_data = $log_data;
 	}
-
 }

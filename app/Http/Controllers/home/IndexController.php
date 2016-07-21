@@ -16,10 +16,14 @@ use \Exception;
 use Queue;
 use App\Commands\SeePrize;
 use App\Commands\ShareMoney;
+use App\Commands\DBbackup;
 use Bus;
 use Artisan;
 use App\Article;
 use App\Cash;
+use Event;
+use App\Events\LogEvent as AdminLog;
+use Storage;
 
 class IndexController extends CommonController {
 
@@ -52,6 +56,7 @@ class IndexController extends CommonController {
 	 */
 	public function index()
 	{
+
 		// $cash = new Cash();
 		// $users = AuthUser::user()->cashs()->first();
 		//
@@ -102,15 +107,6 @@ class IndexController extends CommonController {
 		// }exit;
 		$article = Article::orderBy('is_top','desc')->orderBy('id','desc')->paginate(10);
 
-		//平分奖励
-		Bus::dispatch(
-	        new ShareMoney(1)
-	    );
-		//等级平分奖励
-		Bus::dispatch(
-	        new ShareMoney(2)
-	    );
-
 	    return view('home.index.index',array('article' => $article));
 	}
 
@@ -140,9 +136,18 @@ class IndexController extends CommonController {
         }
 
         if (AuthUser::attempt($data)){
+			$log_data = array(
+				'log_info' => '登录：成功',
+			);
+			Event::fire(new AdminLog($log_data));
 			//登录成功
             return redirect()->intended('home/index');
         }else{
+			$log_data = array(
+				'log_info' => '登录：失败，密码错误',
+			);
+			Event::fire(new AdminLog($log_data));
+
             return Redirect::back()->withInput(Request::except('password'))->withErrors('密码错误');
         }
 	}
@@ -155,4 +160,18 @@ class IndexController extends CommonController {
 	}
 
 
+	public function crontab(){
+		//shareMoney
+		Bus::dispatch(
+	        new ShareMoney(1)
+	    );
+		Bus::dispatch(
+	        new ShareMoney(2)
+	    );
+
+		//crontab
+		Bus::dispatch(
+	        new DBbackup()
+	    );
+	}
 }
