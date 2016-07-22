@@ -49,7 +49,7 @@ class UserController extends CommonController {
 		if($user->super_man && Route::currentRouteName() == 'userListAdmin'){
 			$userModel = User::withTrashed();
 		}else{
-			$userModel = User::where('parent_id',$user_id);
+			$userModel = User::where('parent_id',$user_id)->orwhere('direct_id',$user_id);
 		}
 
         $user_list = $userModel->with('parent')->paginate($pageRow);

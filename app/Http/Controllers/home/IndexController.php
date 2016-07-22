@@ -144,6 +144,7 @@ class IndexController extends CommonController {
             return redirect()->intended('home/index');
         }else{
 			$log_data = array(
+				'u_id' => '0',
 				'log_info' => '登录：失败，密码错误',
 			);
 			Event::fire(new AdminLog($log_data));

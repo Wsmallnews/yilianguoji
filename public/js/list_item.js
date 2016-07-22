@@ -19,8 +19,9 @@ var list = {
 		//绑定分页
 		$(list.div_id).on('click','li.page_num',function(){
 	    	var url = $(this).find('a').attr('url');
-	    	list.request_url = (url !== undefined && url != null && url != '') ? url : list.request_url;
+			url = url.replace('/?page','?page');
 
+	    	list.request_url = (url !== undefined && url != null && url != '') ? url : list.request_url;
 	    	list.load_request();
 	    });
 
@@ -36,7 +37,7 @@ var list = {
 		}
 		list.load_request(data);
 	},
-	//根据传入的data载入数据
+
 	search_list : function (data,listCB) {
 		if(listCB !== undefined){
 			list.callback = listCB;
@@ -52,7 +53,6 @@ var list = {
 	//请求
 	load_request : function (request_data){
 		list.set_data(request_data);
-
 		l.ajax({
             url:list.request_url,
             data:list.request_data,
@@ -64,6 +64,8 @@ var list = {
 			}
         });
 	},
+
+
 	//默认success callback函数
 	page_callback : function(r){
 		if(r.error == 0){
