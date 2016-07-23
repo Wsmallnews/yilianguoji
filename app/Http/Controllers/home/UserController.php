@@ -415,6 +415,8 @@ class UserController extends CommonController {
 		$data = Request::all();
 
 		$user = User::withTrashed()->find($data['id']);
+
+		DB::beginTransaction();
 		try {
 			if($user->super_man || $user->id == Session::get('laravel_user_id')){
 				throw new Exception("对不起，您不能操作该用户！");
@@ -441,16 +443,39 @@ class UserController extends CommonController {
 				}
 			}else if($data['type'] == 'del'){
 				if($user->trashed()){
+
+					//删除用户
+					$parent_id = $user->parent_id;
 					$user->forceDelete();
 
+					//删除用户钱包
+					$wallet = Wallet::find($user->id);
+					if($wallet){
+						$blance = $wallet->money;
+						$blance_lock = $wallet->money_lock;
+						$wallet->delete();
+					}
+
+					//上级用户的children_num - 1
+					if($parent_id){
+						$parent_info = $user->find($parent_id);
+						if($parent_info){
+							$parent_info->children_num = $parent_info->children_num - 1;
+							$parent_info->save();
+						}
+					}
+
 					$log_data = array(
-						'log_info' => '用户删除：成功【id：'.$user->id."】",
+						'log_info' => '用户删除：成功【id：'.$user->id."】，删除钱包余额：".(isset($blance) ? $blance : 0)."，锁定余额：".(isset($blance_lock) ? $blance_lock : 0)."，上级用户id：".$parent_id,
 					);
 					Event::fire(new AdminLog($log_data));
 				}
 			}
+
+			DB::commit();
 			return Response::json(array('error'=>0,'info' => '操作成功'));
 		}catch(Exception $e){
+			DB::rollback();
 			return Response::json(array('error'=>1,'info' => $e->getMessage()));
 		}
 	}
