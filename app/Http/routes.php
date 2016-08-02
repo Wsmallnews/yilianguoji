@@ -68,7 +68,7 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
         Route::get('adminCashList', array('as' => 'cashAdmin','uses' => 'CashController@adminLists'));      //管理员提现列表
         Route::get('doApply', 'CashController@doApply');        //处理提现
         Route::get('adminUserList', array('as' => 'userListAdmin','uses' => 'UserController@lists'));  //管理员用户列表
-        Route::get('adminUserNetwork/{id?}/{keyword?}', 'UserController@adminUserNetwork');           //管理员网络图
+        Route::get('adminUserNetwork/{id?}/{keyword?}', array('as' => 'adminNetwork','uses' => 'UserController@adminUserNetwork'));           //管理员网络图
         Route::get('adminUserAdd', array('as' => 'userAddAdmin','uses' => 'UserController@add'));       //管理员添加用户
         Route::get('resetPass', 'UserController@resetPass');       //管理员重置密码
         Route::get('userFreeze', array('as' => 'userListAdmin','uses' => 'UserController@freeze'));  //用户冻结，解冻
@@ -83,6 +83,8 @@ Route::group(['prefix' => 'home', 'namespace' => 'home','middleware' => 'home'],
         Route::get('adminWalletLogList/{id?}', 'WalletLogController@adminLists');   //钱包记录列表
 
         Route::get('adminRechargeLogList/{id?}', 'RechargeLogController@adminLists');   //充值记录
+        Route::get('backupLog', 'BackupLogController@lists');   //数据库备份列表
+        Route::get('backDownLoad/{id?}', 'BackupLogController@backDownLoad');   //数据库备份下载
 
     });
 });
@@ -93,7 +95,7 @@ Route::group(['middleware' => 'home'],function(){
     Route::get('home', 'home\IndexController@login');
 });
 
-Route::get('crontab', 'home\IndexController@crontab');   //充值记录
+Route::get('crontab', 'home\IndexController@crontab');   //计划任务
 
 // Route::controllers([
 // 	'auth' => 'Auth\AuthController',

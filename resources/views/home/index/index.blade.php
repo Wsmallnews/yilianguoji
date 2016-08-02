@@ -12,6 +12,7 @@
     .chat-icon{padding: 10px;border-radius: 50%;background-color: #f0ad4e;color: #FFFFFF;}
     .chat .chat-body{color:#333333;}
     .chat a:hover{text-decoration:none;}
+    .user_field{color:#337ab7;}
     #index_more{color:#333333;}
     </style>
 </head>
@@ -72,7 +73,7 @@
                                         <i class="fa fa-group fa-5x huge"></i>
                                     </div>
                                     <div class="col-xs-12 text-center">
-                                        <div class="huge">网络管理</div>
+                                        <div class="huge">网络图管理</div>
                                     </div>
                                 </div>
                             </a>
@@ -105,11 +106,12 @@
                             基本信息
                         </div>
                         <div class="panel-body">
-                            <p class="lead">用户名：{{$l_user->name}}</p>
-                            <p>邮箱：{{$l_user->email}}</p>
-                            <p>手机号：{{$l_user->phone}}</p>
-                            <p>真实姓名：{{$l_user->real_name}}</p>
-                            <p>身份证号：{{$l_user->cert_no}}</p>
+                            <p class="lead">用户名：<span class="user_field">{{$l_user->name}}</span></p>
+                            <p>等级：<span class="user_field rank">{{$l_user->rank}}</span></p>
+                            <p>邮箱：<span class="user_field email">{{$l_user->email}}</span></p>
+                            <p>手机号：<span class="user_field phone">{{$l_user->phone}}</span></p>
+                            <p>真实姓名：<span class="user_field real_name">{{$l_user->real_name}}</span></p>
+                            <p>身份证号：<span class="user_field cert_no">{{$l_user->cert_no}}</span></p>
                         </div>
                         <!-- /.panel-body -->
                     </div>

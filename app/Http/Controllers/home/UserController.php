@@ -517,7 +517,7 @@ class UserController extends CommonController {
 			$son_list[$key]['grandson'] = $grandson_list;
 		}
 
-		return view('home.user.adminUserNetwork',array('user' => $user,'son_list' => $son_list,'keyword' => $keyword));
+		return view('home.user.userNetwork',array('user' => $user,'son_list' => $son_list,'keyword' => $keyword));
 
 		// if(!empty($keyword)){
 		// 	$user = User::where('name','like','%'.$keyword.'%')->first();

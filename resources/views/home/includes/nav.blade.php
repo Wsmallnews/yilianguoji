@@ -173,7 +173,7 @@
                                     <a href="{{url('home/userSelfUp')}}">自助升级</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/userNetwork')}}">拓扑图管理</a>
+                                    <a href="{{url('home/userNetwork')}}">网络图管理</a>
                                 </li>
                             </ul>
                         </li>
@@ -225,7 +225,7 @@
                                     <a href="{{url('home/adminCashList')}}">提现申请</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('home/adminUserNetwork')}}">拓扑图管理</a>
+                                    <a href="{{url('home/adminUserNetwork')}}">网络图管理</a>
                                 </li>
                                 <li>
                                     <a href="{{url('home/adminWalletList')}}">钱包列表</a>
